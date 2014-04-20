@@ -1,6 +1,6 @@
 {
     "name": "kartik-v/yii2-datecontrol",
-    "description": "Date control module allowing separation of formats for View and Model for Yii Framework 2.0",
+    "description": "Date control module allowing separation of date formats for View and Model for Yii Framework 2.0",
     "keywords": ["yii", "yii2", "extension", "date", "control", "format"],
     "homepage": "https://github.com/kartik-v/yii2-datecontrol",
     "type": "yii2-extension",
