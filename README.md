@@ -40,7 +40,7 @@ between client and server using PHP DateTime object. The DateControl widget uses
 ```php
 'modules' => [
    'datecontrol' =>  [
-        'class' => '\kartik\datecontrol\Module',
+        'class' => 'kartik\datecontrol\Module',
         
         // format settings for displaying each date attribute
         'displaySettings' => [
