@@ -110,7 +110,8 @@ to the ```require``` section of your `composer.json` file.
 
 ## Usage
 ```php
-use kartik\widgets\datecontrol;
+use kartik\datecontrol\Module;
+use kartik\datecontrol\DateControl;
 ```
 
 ## License
