@@ -1,7 +1,7 @@
 yii2-datecontrol
 ================
 
-The **Date Control** module allows separation of formats for View and Model for Yii Framework 2.0.
+The **Date Control** module allows controlling date formats of attributes separately for View and Model for Yii Framework 2.0.
 
 ## Why Date Control?
 
