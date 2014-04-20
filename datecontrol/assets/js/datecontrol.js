@@ -20,7 +20,8 @@ function parseDateControl(params) {
         $idSave = $("#" + params.idSave),
         vUrl = params.url,
         vType = params.type,
-        vFormat = params.format;
+        vDispFormat = params.dispFormat,
+        vSaveFormat = params.saveFormat;
 
     $idDisp.on("change", function () {
         if (isEmpty($idDisp.val())) {
@@ -34,7 +35,8 @@ function parseDateControl(params) {
                 data: {
                     displayDate: $idDisp.val(),
                     type: vType,
-                    format: vFormat,
+                    dispFormat: vDispFormat,
+                    saveFormat: vSaveFormat
                 },
                 success: function (data) {
                     if (data.status == "success") {

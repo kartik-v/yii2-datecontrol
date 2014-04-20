@@ -26,9 +26,11 @@ class ParseController extends \yii\web\Controller
         $module = Yii::$app->controller->module;
         if (isset($_POST['displayDate'])) {
             $type = empty($_POST['type']) ? Module::FORMAT_DATE : $_POST['type'];
-            $format = empty($_POST['format']) ? $module->saveSettings[$type] : $_POST['format'];
-            $date = new \DateTime($_POST['displayDate']);
-            echo Json::encode(['status' => 'success', 'output' => $date->format($format)]);
+            $saveFormat = $_POST['saveFormat'];
+            $dispFormat = $_POST['dispFormat'];
+            $date = \DateTime::createFromFormat($dispFormat, $_POST['displayDate']);
+            $value = (empty($date) || !$date) ? '' :  $date->format($saveFormat);
+            echo Json::encode(['status' => 'success', 'output' => $value]);
         } else {
             echo Json::encode(['status' => 'error', 'output' => 'No display date found']);
         }

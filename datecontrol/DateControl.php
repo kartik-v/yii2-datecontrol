@@ -126,7 +126,11 @@ class DateControl extends \kartik\widgets\InputWidget
             $this->displayFormat = $this->_module->displaySettings[$this->type];
         }
 
-        $this->_widgetSettings = $this->_module->widgetSettings;
+        if (empty($this->saveFormat)) {
+            $this->saveFormat = $this->_module->saveSettings[$this->type];
+        }
+
+            $this->_widgetSettings = $this->_module->widgetSettings;
         if ($this->autoWidget) {
             $this->_widgetSettings = [
                 self::FORMAT_DATE => ['class' => '\kartik\widgets\DatePicker'],
@@ -239,7 +243,8 @@ class DateControl extends \kartik\widgets\InputWidget
             'idSave' => $this->saveOptions['id'],
             'url' => Url::to([$this->_module->convertAction]),
             'type' => $this->type,
-            'format' => empty($this->saveFormat) ? $this->_module->saveSettings[$this->type] : $this->saveFormat
+            'saveFormat' => $this->saveFormat,
+            'dispFormat' => $this->displayFormat,
         ];
         $this->registerPluginOptions('datecontrol');
         if ($this->isWidget()) {
