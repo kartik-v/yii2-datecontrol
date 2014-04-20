@@ -6,7 +6,7 @@ The **Date Control** module allows controlling date formats of attributes separa
 ## Why Date Control?
 
 When working with the great Yii Framework, one of the most common observations I had was the need to have a proper control on the date settings. The date settings for each 
-Yii application, are unique to each regional requirements and the application need. Most Yii developers and users almost always need an option of displaying date and time in ONE specific format, 
+Yii application, are unique to each application and region. Most Yii developers or users almost always need an option of displaying date and time in ONE specific format, 
 but save them to database in ANOTHER format. So to summarize, the problem statement was:
 
 - Lack of a single configuration method to display date & times to user (or VIEW) in ONE format
