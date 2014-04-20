@@ -88,7 +88,7 @@ echo $form->field($model, 'datetime_2')->widget(DateControl::classname(), [
 ```
 
 ### Demo
-You can see detailed [documentation](http://demos.krajee.com/datecontrol) and [demonstration](http://demos.krajee.com/datecontrol-demo) on usage of the extension.
+You can see detailed [documentation and usage](http://demos.krajee.com/datecontrol) and a [demonstration](http://demos.krajee.com/datecontrol-demo) on the extension.
 
 ## Installation
 
