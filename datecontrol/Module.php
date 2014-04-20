@@ -104,7 +104,7 @@ class Module extends \yii\base\Module
      * @param $format
      * @return array
      */
-    public static function getWidgetOptions($type, $format) {
+    public static function defaultWidgetOptions($type, $format) {
         $options = [];
         if (!empty($format) && $type !== self::FORMAT_TIME) {
             $options['convertFormat'] = true;
@@ -117,16 +117,16 @@ class Module extends \yii\base\Module
     }
 
     /**
-     * Initializes the default options for the `\kartik\widgets` based on `type`
+     * Gets the options for the `\kartik\widgets` based on `type`
      *
      * @param $type string the format type
      */
-    protected function initWidgetOptions($type)
+    public static function getWidgetOptions($type)
     {
         $attrib = $type . 'Format';
         $options = [];
         $format = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
-        return static::getWidgetOptions($type, $format);
+        return static::defaultWidgetOptions($type, $format);
     }
 
     /**
@@ -139,24 +139,5 @@ class Module extends \yii\base\Module
             self::FORMAT_TIME => 'H:i:s',
             self::FORMAT_DATETIME => 'Y-m-d H:i:s',
         ];
-        if ($this->autoWidget) {
-            $this->widgetSettings = [
-                self::FORMAT_DATE => ['class' => '\kartik\widgets\DatePicker'],
-                self::FORMAT_TIME => ['class' => '\kartik\widgets\TimePicker'],
-                self::FORMAT_DATETIME => ['class' => '\kartik\widgets\DateTimePicker'],
-            ];
-        }
-        if (!empty($this->widgetSettings)) {
-            foreach ($this->widgetSettings as $type => $setting) {
-                if (empty($setting['class']) || !is_subclass_of($setting['class'], '\yii\widgets\InputWidget')) {
-                    $message = empty($setting['class']) ? "No class was setup for the key '{$type}'." :
-                        "The class '" . $setting['class'] . "' setup for key '{$type} is invalid or does not extend from '\\yii\\widgets\\InputWidget'";
-                    throw new InvalidConfigException('Invalid widgetSettings in Date Control module config. ' . $message);
-                }
-                if ($this->autoWidget) {
-                    $this->widgetSettings[$type]['options'] = $this->initWidgetOptions($type);
-                }
-            }
-        }
     }
 }

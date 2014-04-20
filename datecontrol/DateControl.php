@@ -52,7 +52,7 @@ class DateControl extends \kartik\widgets\InputWidget
      * - \kartik\widgets\TimePicker for FORMAT_TIME
      * - \kartik\widgets\DateTimePicker for FORMAT_DATETIME
      */
-    public $autoWidget = true;
+    public $autoWidget;
 
     /**
      * @var string any custom widget class to use. Will only be used if autoWidget is set to `false`.
@@ -67,6 +67,9 @@ class DateControl extends \kartik\widgets\InputWidget
 
     /**
      * @var array the HTML attributes for the base model input that will be saved typically to database.
+     * The following special options are recognized:
+     * - 'type': string, whether to generate a 'hidden' or 'text' input. Defaults to 'hidden'.
+     * - 'label': string, any label to be placed before the input. Will be only displayed if 'type' is 'text'.
      */
     public $saveOptions = [];
 
@@ -81,22 +84,64 @@ class DateControl extends \kartik\widgets\InputWidget
     protected $_module;
 
     /**
+     * @var array the parsed widget settings from the module
+     */
+    protected $_widgetSettings = [];
+
+    /**
      * Initializes widget
      *
      * @throws \yii\base\InvalidConfigException
      */
     public function init()
     {
+        $this->initModule();
+        parent::init();
+        $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
+        $this->saveOptions['id'] = $this->options['id'] . '-save';
+    }
+
+    /**
+     * Initializes widget based on module settings
+     *
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function initModule()
+    {
         $this->_module = Yii::$app->getModule('datecontrol');
         if (empty($this->_module)) {
             throw new InvalidConfigException("The module 'datecontrol' has not been setup in your configuration file.");
         }
-        if (!$this->autoWidget && !empty($this->widgetClass) && !is_subclass_of($this->widgetClass, '\yii\widgets\InputWidget')) {
-            throw new InvalidConfigException('The widgetClass entered must be valid and extend from "\yii\widgets\InputWidget".');
+        if (!isset($this->autoWidget)) {
+            $this->autoWidget = $this->_module->autoWidget;
         }
-        parent::init();
-        $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
-        $this->saveOptions['id'] = $this->options['id'] . '-save';
+        if (!$this->autoWidget && !empty($this->widgetClass) && !class_exists($this->widgetClass)) {
+            throw new InvalidConfigException("The widgetClass '{$this->widgetClass}' entered is invalid.");
+        }
+
+        if (empty($this->displayFormat) && empty($this->_module->displaySettings[$this->type])) {
+            $attrib = $this->type . 'Format';
+            $this->displayFormat = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : 'd-M-Y';
+        } elseif (empty($this->displayFormat)) {
+            $this->displayFormat = $this->_module->displaySettings[$this->type];
+        }
+
+        $this->_widgetSettings = $this->_module->widgetSettings;
+        if ($this->autoWidget) {
+            $this->_widgetSettings = [
+                self::FORMAT_DATE => ['class' => '\kartik\widgets\DatePicker'],
+                self::FORMAT_TIME => ['class' => '\kartik\widgets\TimePicker'],
+                self::FORMAT_DATETIME => ['class' => '\kartik\widgets\DateTimePicker'],
+            ];
+            foreach ($this->_widgetSettings as $type => $setting) {
+                if (empty($setting['class']) || !class_exists($setting['class'])) {
+                    $message = empty($setting['class']) ? "No class was setup for the key '{$type}'." :
+                        "The class '" . $setting['class'] . "' setup for key '{$type} is invalid.";
+                    throw new InvalidConfigException('Invalid widgetSettings in Date Control module config. ' . $message);
+                }
+                $this->_widgetSettings[$type]['options'] = Module::getWidgetOptions($type);
+            }
+        }
     }
 
     /**
@@ -112,7 +157,9 @@ class DateControl extends \kartik\widgets\InputWidget
     }
 
     /**
-     * @return bool whether a widget is used to render the display
+     * Whether a widget is used to render the display
+     *
+     * @return bool
      */
     protected function isWidget()
     {
@@ -133,15 +180,15 @@ class DateControl extends \kartik\widgets\InputWidget
             }
             return Html::textInput($this->_displayAttribName, $value, $this->options);
         }
-        if (!empty($this->displayFormat)) {
-            $this->options += Module::getWidgetOptions($this->type, $this->displayFormat);
+        $class = !empty($this->widgetClass) ? $this->widgetClass :
+            ArrayHelper::getValue($this->_widgetSettings[$this->type], 'class', '\yii\jui\DatePicker');
+
+        if (!empty($this->displayFormat) && $this->autoWidget) {
+            $this->options += Module::defaultWidgetOptions($this->type, $this->displayFormat);
         }
-        if (!empty($this->_module->widgetSettings[$this->type]['options'])) {
-            $this->options += $this->_module->widgetSettings[$this->type]['options'];
+        if (!empty($this->_widgetSettings[$this->type]['options'])) {
+            $this->options += $this->_widgetSettings[$this->type]['options'];
         }
-        $class = empty($this->_module->widgetSettings[$this->type]['class']) ?
-            '\kartik\widgets\DatePicker' :
-            $this->_module->widgetSettings[$this->type]['class'];
         unset($this->options['model'], $this->options['attribute']);
         $this->options['name'] = $this->_displayAttribName;
         $this->options['value'] = $value;
@@ -155,6 +202,15 @@ class DateControl extends \kartik\widgets\InputWidget
      */
     protected function getSaveInput()
     {
+        $type = ArrayHelper::remove($this->saveOptions, 'type', 'hidden');
+        $label = ArrayHelper::remove($this->saveOptions, 'label', '');
+
+        if ($type === 'text') {
+            $this->saveOptions['tabindex'] = 10000;
+            return $label . ($this->hasModel() ?
+                Html::activeTextInput($this->model, $this->attribute, $this->saveOptions) :
+                Html::textInput($this->name, $this->value, $this->saveOptions));
+        }
         return $this->hasModel() ?
             Html::activeHiddenInput($this->model, $this->attribute, $this->saveOptions) :
             Html::hiddenInput($this->name, $this->value, $this->saveOptions);
@@ -168,13 +224,7 @@ class DateControl extends \kartik\widgets\InputWidget
      */
     protected function getDisplayValue($data)
     {
-        if (empty($this->displayFormat) && empty($this->_module->displaySettings[$this->type])) {
-            $attrib = $this->type . 'Format';
-            $format = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : 'd-M-Y';
-        } else {
-            $format = empty($this->displayFormat) ? $this->_module->displaySettings[$this->type] : $this->displayFormat;
-        }
-        return Yii::$app->formatter->format($data, [$this->type, $format]);
+        return Yii::$app->formatter->format($data, [$this->type, $this->displayFormat]);
     }
 
     /**
