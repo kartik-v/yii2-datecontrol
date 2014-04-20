@@ -25,7 +25,7 @@ input as per the desired save format. The other good thing is, that the extensio
 as well. Thus all client model validations and other jquery events needed by Picker widgets are automatically triggered.
 
 > NOTE: All date and time formats used across this module follow one standard - i.e. [PHP Date Time format strings](http://php.net/manual/en/function.date.php#refsect1-function.date-parameters). The extension automatically
-provides three widgets from to display and control the date-time inputs. 
+provides three widgets to display and control the date-time inputs. 
 
 - [\kartik\widgets\DatePicker](http://demos.krajee.com/widget-details/DatePicker) if your format type is `date`
 - [\kartik\widgets\TimePicker](http://demos.krajee.com/widget-details/TimePicker) if your format type is `time`
