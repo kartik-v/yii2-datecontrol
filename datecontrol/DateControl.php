@@ -184,7 +184,7 @@ class DateControl extends \kartik\widgets\InputWidget
             }
             return Html::textInput($this->_displayAttribName, $value, $this->options);
         }
-        $class = !empty($this->widgetClass) ? $this->widgetClass :
+        $class = (!$this->autoWidget && !empty($this->widgetClass)) ? $this->widgetClass :
             ArrayHelper::getValue($this->_widgetSettings[$this->type], 'class', '\yii\jui\DatePicker');
 
         if (!empty($this->displayFormat) && $this->autoWidget) {
