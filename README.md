@@ -13,7 +13,7 @@ but save them to database in ANOTHER format. So to summarize, the problem statem
 - Lack of a configuration method to save date & times in database (or MODEL) in ANOTHER format
 
 Most existing Yii solutions try to overcome the above by setting the format in `model->afterFind`, present in view, then unformat it in `model->setAttribues` or `model->beforeValidate`.
-This was still an issue when one many models and views in the application and changes in development cycle, had to be replicated in many places (more complex scenarios being multi-regional formats).
+This was still an issue when one had many models and views in the application and changes in development cycle, had to be replicated in many places (more complex scenarios being multi-regional formats).
 
 This module helps overcome this large gap by addressing all of these at the presentational level. The module enables one to configure the date and time 
 settings separately for DISPLAY and SAVE. This can be setup either globally or individually at each DateControl widget level. And if this is not useful enough, it 
