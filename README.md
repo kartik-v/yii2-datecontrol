@@ -27,9 +27,9 @@ as well. Thus all client model validations and other jquery events needed by Pic
 > NOTE: All date and time formats used across this module follow one standard - i.e. [PHP Date Time format strings](http://php.net/manual/en/function.date.php#refsect1-function.date-parameters). The extension automatically
 provides three widgets to display and control the date-time inputs. 
 
-- [\kartik\widgets\DatePicker](http://demos.krajee.com/widget-details/DatePicker) if your format type is `date`
-- [\kartik\widgets\TimePicker](http://demos.krajee.com/widget-details/TimePicker) if your format type is `time`
-- [\kartik\widgets\DateTimePicker](http://demos.krajee.com/widget-details/DateTimePicker) if your format type is `datetime`
+- [\kartik\widgets\DatePicker](http://demos.krajee.com/widget-details/datepicker) if your format type is `date`
+- [\kartik\widgets\TimePicker](http://demos.krajee.com/widget-details/timepicker) if your format type is `time`
+- [\kartik\widgets\DateTimePicker](http://demos.krajee.com/widget-details/datetimepicker) if your format type is `datetime`
 
 
 ## Module
