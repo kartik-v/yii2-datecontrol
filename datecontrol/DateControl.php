@@ -97,6 +97,9 @@ class DateControl extends \kartik\widgets\InputWidget
     public function init()
     {
         $this->initModule();
+        if ($this->autoWidget === null) {
+            $this->autoWidget = true;
+        }
         parent::init();
         $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
         $this->saveOptions['id'] = $this->options['id'] . '-save';
@@ -115,9 +118,6 @@ class DateControl extends \kartik\widgets\InputWidget
         }
         if (!isset($this->autoWidget)) {
             $this->autoWidget = $this->_module->autoWidget;
-        }
-        if (empty($this->autoWidget)) {
-            $this->autoWidget = true;
         }
         if (!$this->autoWidget && !empty($this->widgetClass) && !class_exists($this->widgetClass)) {
             throw new InvalidConfigException("The widgetClass '{$this->widgetClass}' entered is invalid.");
