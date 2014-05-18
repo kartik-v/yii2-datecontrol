@@ -51,6 +51,7 @@ class DateControl extends \kartik\widgets\InputWidget
      * - \kartik\widgets\DatePicker for FORMAT_DATE
      * - \kartik\widgets\TimePicker for FORMAT_TIME
      * - \kartik\widgets\DateTimePicker for FORMAT_DATETIME
+     * If not set, this will default to `true.`
      */
     public $autoWidget;
 
@@ -114,6 +115,9 @@ class DateControl extends \kartik\widgets\InputWidget
         }
         if (!isset($this->autoWidget)) {
             $this->autoWidget = $this->_module->autoWidget;
+        }
+        if (empty($this->autoWidget)) {
+            $this->autoWidget = true;
         }
         if (!$this->autoWidget && !empty($this->widgetClass) && !class_exists($this->widgetClass)) {
             throw new InvalidConfigException("The widgetClass '{$this->widgetClass}' entered is invalid.");
