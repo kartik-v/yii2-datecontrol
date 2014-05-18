@@ -97,9 +97,6 @@ class DateControl extends \kartik\widgets\InputWidget
     public function init()
     {
         $this->initModule();
-        if ($this->autoWidget === null) {
-            $this->autoWidget = true;
-        }
         parent::init();
         $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
         $this->saveOptions['id'] = $this->options['id'] . '-save';
@@ -122,6 +119,9 @@ class DateControl extends \kartik\widgets\InputWidget
         if (!$this->autoWidget && !empty($this->widgetClass) && !class_exists($this->widgetClass)) {
             throw new InvalidConfigException("The widgetClass '{$this->widgetClass}' entered is invalid.");
         }
+        if ($this->autoWidget === null) {
+            $this->autoWidget = true;
+        }
 
         if (empty($this->displayFormat) && empty($this->_module->displaySettings[$this->type])) {
             $attrib = $this->type . 'Format';
@@ -134,7 +134,7 @@ class DateControl extends \kartik\widgets\InputWidget
             $this->saveFormat = $this->_module->saveSettings[$this->type];
         }
 
-            $this->_widgetSettings = $this->_module->widgetSettings;
+        $this->_widgetSettings = $this->_module->widgetSettings;
         if ($this->autoWidget) {
             $this->_widgetSettings = [
                 self::FORMAT_DATE => ['class' => '\kartik\widgets\DatePicker'],
