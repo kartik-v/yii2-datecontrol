@@ -192,10 +192,10 @@ class DateControl extends \kartik\widgets\InputWidget
             ArrayHelper::getValue($this->_widgetSettings[$this->type], 'class', '\yii\jui\DatePicker');
 
         if (!empty($this->displayFormat) && $this->autoWidget) {
-            $this->options += Module::defaultWidgetOptions($this->type, $this->displayFormat);
+            $this->options = ArrayHelper::merge(Module::defaultWidgetOptions($this->type, $this->displayFormat), $this->options);
         }
         if (!empty($this->_widgetSettings[$this->type]['options'])) {
-            $this->options += $this->_widgetSettings[$this->type]['options'];
+            $this->options = ArrayHelper::merge($this->_widgetSettings[$this->type]['options'], $this->options);
         }
         unset($this->options['model'], $this->options['attribute']);
         $this->options['name'] = $this->_displayAttribName;
