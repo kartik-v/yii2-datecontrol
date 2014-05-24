@@ -99,7 +99,8 @@ class DateControl extends \kartik\widgets\InputWidget
         $this->initModule();
         parent::init();
         $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
-        $this->saveOptions['id'] = $this->options['id'] . '-save';
+        $this->saveOptions['id'] = $this->options['id'];
+        $this->options['id'] = $this->options['id'] . '-disp';
     }
 
     /**
