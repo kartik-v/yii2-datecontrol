@@ -45,7 +45,7 @@ The extension has been created as a module to enable access to global settings f
 between client and server using PHP DateTime object. The DateControl widget uses ajax processing to convert display (view) format to model (save) format.
 
 ```php
-use \kartik\datecontrol\Module;
+use kartik\datecontrol\Module;
 'modules' => [
    'datecontrol' =>  [
         'class' => 'kartik\datecontrol\Module',
