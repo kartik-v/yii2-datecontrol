@@ -172,7 +172,7 @@ class DateControl extends \kartik\widgets\InputWidget
      */
     protected function isWidget()
     {
-        return ($this->autoWidget || $this->widgetClass);
+        return ($this->autoWidget || !empty($this->widgetClass));
     }
 
     /**
