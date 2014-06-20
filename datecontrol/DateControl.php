@@ -123,19 +123,19 @@ class DateControl extends \kartik\widgets\InputWidget
         if ($this->autoWidget === null) {
             $this->autoWidget = true;
         }
-
+        $this->_widgetSettings = $this->_module->widgetSettings;
         if (empty($this->displayFormat) && empty($this->_module->displaySettings[$this->type])) {
             $attrib = $this->type . 'Format';
             $this->displayFormat = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : 'd-M-Y';
         } elseif (empty($this->displayFormat)) {
             $this->displayFormat = $this->_module->displaySettings[$this->type];
         }
-
+        if (!$this->autoWidget && $this->widgetClass === null && !empty($this->_widgetSettings[$this->type]['class'])) {
+            $this->widgetClass =  $this->_widgetSettings[$this->type]['class'];
+        }
         if (empty($this->saveFormat)) {
             $this->saveFormat = $this->_module->saveSettings[$this->type];
         }
-
-        $this->_widgetSettings = $this->_module->widgetSettings;
         if ($this->autoWidget) {
             $this->_widgetSettings = [
                 self::FORMAT_DATE => ['class' => '\kartik\widgets\DatePicker'],
@@ -172,7 +172,7 @@ class DateControl extends \kartik\widgets\InputWidget
      */
     protected function isWidget()
     {
-        return ($this->autoWidget || !empty($this->widgetClass));
+        return ($this->autoWidget || $this->widgetClass);
     }
 
     /**
@@ -189,9 +189,7 @@ class DateControl extends \kartik\widgets\InputWidget
             }
             return Html::textInput($this->_displayAttribName, $value, $this->options);
         }
-        $class = (!$this->autoWidget && !empty($this->widgetClass)) ? $this->widgetClass :
-            ArrayHelper::getValue($this->_widgetSettings[$this->type], 'class', '\yii\jui\DatePicker');
-
+        $class = ($this->widgetClass === null) ? '\yii\jui\DatePicker' : $this->widgetClass;
         if (!empty($this->displayFormat) && $this->autoWidget) {
             $this->options = ArrayHelper::merge(Module::defaultWidgetOptions($this->type, $this->displayFormat), $this->options);
         }
