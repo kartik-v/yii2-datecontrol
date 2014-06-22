@@ -130,9 +130,6 @@ class DateControl extends \kartik\widgets\InputWidget
         } elseif (empty($this->displayFormat)) {
             $this->displayFormat = $this->_module->displaySettings[$this->type];
         }
-        if (!$this->autoWidget && empty($this->widgetClass) && !empty($this->_widgetSettings[$this->type]['class'])) {
-            $this->widgetClass =  $this->_widgetSettings[$this->type]['class'];
-        }
         if (empty($this->saveFormat)) {
             $this->saveFormat = $this->_module->saveSettings[$this->type];
         }
@@ -150,6 +147,8 @@ class DateControl extends \kartik\widgets\InputWidget
                 }
                 $this->_widgetSettings[$type]['options'] = Module::getWidgetOptions($type);
             }
+        }
+        if (empty($this->widgetClass) && !empty($this->_widgetSettings[$this->type]['class'])) {
             $this->widgetClass =  $this->_widgetSettings[$this->type]['class'];
         }
     }
