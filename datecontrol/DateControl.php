@@ -150,6 +150,7 @@ class DateControl extends \kartik\widgets\InputWidget
                 }
                 $this->_widgetSettings[$type]['options'] = Module::getWidgetOptions($type);
             }
+            $this->widgetClass =  $this->_widgetSettings[$this->type]['class'];
         }
     }
 
@@ -192,7 +193,6 @@ class DateControl extends \kartik\widgets\InputWidget
         if ($this->widgetClass === null && !$this->autoWidget) {
             throw new InvalidConfigException("The widgetClass has not been setup for '{$this->type}'.");
         }
-        $class = $this->widgetClass;
         if (!empty($this->displayFormat) && $this->autoWidget) {
             $this->options = ArrayHelper::merge(Module::defaultWidgetOptions($this->type, $this->displayFormat), $this->options);
         }
@@ -202,6 +202,7 @@ class DateControl extends \kartik\widgets\InputWidget
         unset($this->options['model'], $this->options['attribute']);
         $this->options['name'] = $this->_displayAttribName;
         $this->options['value'] = $value;
+        $class = $this->widgetClass;
         return $class::widget($this->options);
     }
 
