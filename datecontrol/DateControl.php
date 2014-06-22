@@ -130,7 +130,7 @@ class DateControl extends \kartik\widgets\InputWidget
         } elseif (empty($this->displayFormat)) {
             $this->displayFormat = $this->_module->displaySettings[$this->type];
         }
-        if (!$this->autoWidget && $this->widgetClass === null && !empty($this->_widgetSettings[$this->type]['class'])) {
+        if (!$this->autoWidget && empty($this->widgetClass) && !empty($this->_widgetSettings[$this->type]['class'])) {
             $this->widgetClass =  $this->_widgetSettings[$this->type]['class'];
         }
         if (empty($this->saveFormat)) {
@@ -189,9 +189,6 @@ class DateControl extends \kartik\widgets\InputWidget
                 $this->options['class'] = 'form-control';
             }
             return Html::textInput($this->_displayAttribName, $value, $this->options);
-        }
-        if ($this->widgetClass === null && !$this->autoWidget) {
-            throw new InvalidConfigException("The widgetClass has not been setup for '{$this->type}'.");
         }
         if (!empty($this->displayFormat) && $this->autoWidget) {
             $this->options = ArrayHelper::merge(Module::defaultWidgetOptions($this->type, $this->displayFormat), $this->options);
