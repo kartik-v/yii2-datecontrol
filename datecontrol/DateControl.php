@@ -232,7 +232,7 @@ class DateControl extends \kartik\widgets\InputWidget
     protected function getDisplayValue($data)
     {
         //return Yii::$app->formatter->format($data, [$this->type, $this->displayFormat]);
-        $date = date_create_from_format($this->saveFormat, $data);
+        $date = \DateTime::createFromFormat($this->saveFormat, $data);
         return $date->format($this->displayFormat);
     }
 
