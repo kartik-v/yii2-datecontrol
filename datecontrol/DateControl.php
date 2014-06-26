@@ -233,7 +233,10 @@ class DateControl extends \kartik\widgets\InputWidget
     {
         //return Yii::$app->formatter->format($data, [$this->type, $this->displayFormat]);
         $date = \DateTime::createFromFormat($this->saveFormat, $data);
-        return $date->format($this->displayFormat);
+        if ($date instanceof \DateTime) {
+            return $date->format($this->displayFormat);
+        }
+        return null;
     }
 
     /**
