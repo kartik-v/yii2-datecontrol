@@ -124,20 +124,17 @@ class DateControl extends \kartik\widgets\InputWidget
             $this->autoWidget = true;
         }
         $this->_widgetSettings = $this->_module->widgetSettings;
-        if (empty($this->displayFormat) && empty($this->_module->displaySettings[$this->type])) {
-            $attrib = $this->type . 'Format';
-            $this->displayFormat = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : 'd-M-Y';
-        } elseif (empty($this->displayFormat)) {
-            $this->displayFormat = $this->_module->displaySettings[$this->type];
+        if (empty($this->displayFormat)) {
+            $this->displayFormat = $this->_module->getDisplayFormat($this->type);
         }
         if (empty($this->saveFormat)) {
-            $this->saveFormat = $this->_module->saveSettings[$this->type];
+            $this->saveFormat = $this->_module->getSaveFormat($this->type);
         }
         if ($this->autoWidget) {
             $this->_widgetSettings = [
                 self::FORMAT_DATE => ['class' => '\kartik\widgets\DatePicker'],
-                self::FORMAT_TIME => ['class' => '\kartik\widgets\TimePicker'],
                 self::FORMAT_DATETIME => ['class' => '\kartik\widgets\DateTimePicker'],
+                self::FORMAT_TIME => ['class' => '\kartik\widgets\TimePicker'],
             ];
             foreach ($this->_widgetSettings as $type => $setting) {
                 if (empty($setting['class']) || !class_exists($setting['class'])) {
@@ -145,11 +142,11 @@ class DateControl extends \kartik\widgets\InputWidget
                         "The class '" . $setting['class'] . "' setup for key '{$type} is invalid.";
                     throw new InvalidConfigException('Invalid widgetSettings in Date Control module config. ' . $message);
                 }
-                $this->_widgetSettings[$type]['options'] = Module::getWidgetOptions($type);
+                $this->_widgetSettings[$type]['options'] = $this->_module->autoWidgetSettings[$type];
             }
         }
         if (empty($this->widgetClass) && !empty($this->_widgetSettings[$this->type]['class'])) {
-            $this->widgetClass =  $this->_widgetSettings[$this->type]['class'];
+            $this->widgetClass = $this->_widgetSettings[$this->type]['class'];
         }
     }
 

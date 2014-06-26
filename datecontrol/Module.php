@@ -10,6 +10,7 @@ namespace kartik\datecontrol;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 
 /**
  * Date control module for Yii Framework 2.0
@@ -53,6 +54,15 @@ class Module extends \yii\base\Module
     public $autoWidget = true;
 
     /**
+     * @var array, the auto widget settings that will be used to render the date input when `autoWidget` is set to `true`.
+     * An associative array that need to be setup as `$type` => `$settings`, where:
+     * - `$type`: string is one of the FORMAT constants, and
+     * - `$settings`: array, the widget settings for the kartik\widgets based on the type.
+     * @see `Module::initSettings()`
+     */
+    public $autoWidgetSettings = [];
+
+    /**
      * @var array the widget settings that will be used to render the date input. An associative array that need
      * to be setup as `$type` => `$settings`, where:
      * - `$type`: string is one of the FORMAT constants, and
@@ -68,7 +78,7 @@ class Module extends \yii\base\Module
      * @var string the route/action to convert the date as per the `saveFormat` in DateControl widget.
      */
     public $convertAction = '/datecontrol/parse/convert';
-    
+
     /**
      * Initializes the module
      */
@@ -76,37 +86,6 @@ class Module extends \yii\base\Module
     {
         $this->initSettings();
         parent::init();
-    }
-
-    /**
-     * Gets the default options for the `\kartik\widgets` based on `type`
-     * @param $type
-     * @param $format
-     * @return array
-     */
-    public static function defaultWidgetOptions($type, $format) {
-        $options = [];
-        if (!empty($format) && $type !== self::FORMAT_TIME) {
-            $options['convertFormat'] = true;
-            $options['pluginOptions']['format'] = $format;
-        } elseif (!empty($format) && $type === self::FORMAT_TIME) {
-            $options['pluginOptions']['showSeconds'] = (strpos($format, 's') > 0) ? true : false;
-            $options['pluginOptions']['showMeridian'] = (strpos($format, 'a') > 0 || strpos($format, 'A') > 0) ? true : false;
-        }
-        return $options;
-    }
-
-    /**
-     * Gets the options for the `\kartik\widgets` based on `type`
-     *
-     * @param $type string the format type
-     */
-    public static function getWidgetOptions($type)
-    {
-        $attrib = $type . 'Format';
-        $options = [];
-        $format = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
-        return static::defaultWidgetOptions($type, $format);
     }
 
     /**
@@ -119,5 +98,99 @@ class Module extends \yii\base\Module
             self::FORMAT_TIME => 'H:i:s',
             self::FORMAT_DATETIME => 'Y-m-d H:i:s',
         ];
+        $this->initAutoWidget();
+    }
+
+    /**
+     * Initializes the autowidget settings
+     */
+    protected function initAutoWidget()
+    {
+        $format = $this->getDisplayFormat(self::FORMAT_TIME);
+        $settings = [
+            self::FORMAT_DATE => [
+                'convertFormat' => true,
+                'pluginOptions' => [
+                    'format' => $this->getDisplayFormat(self::FORMAT_DATE)
+                ]
+            ],
+            self::FORMAT_DATETIME => [
+                'convertFormat' => true,
+                'pluginOptions' => [
+                    'format' => $this->getDisplayFormat(self::FORMAT_DATETIME)
+                ]
+            ],
+            self::FORMAT_TIME => [
+                'pluginOptions' => [
+                    'showSeconds' => (strpos($format, 's') > 0) ? true : false,
+                    'showMeridian' => (strpos($format, 'a') > 0 || strpos($format, 'A') > 0) ? true : false
+                ]
+            ],
+        ];
+        $this->autoWidgetSettings = ArrayHelper::merge($settings, $this->autoWidgetSettings);
+    }
+
+    /**
+     * Gets the display format for the date type. Derives the format based on the following validation sequence:
+     * - if `dateControlDisplay` is set in `Yii::$app->params`, it will be first used
+     * - else, the format as set in `displaySettings` will be used from this module
+     * - else, the format as set in `Yii::$app->formatter` will be used
+     *
+     * @param $type the attribute type whether date, datetime, or time
+     * @return mixed|string
+     */
+    public function getDisplayFormat($type)
+    {
+        if (!empty(Yii::$app->params['dateControlDisplay'][$type])) {
+            return Yii::$app->params['dateControlDisplay'][$type];
+        } elseif (!empty($this->displaySettings[$type])) {
+            return $this->displaySettings[$type];
+        } else {
+            $attrib = $type . 'Format';
+            $format = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
+            return $format;
+        }
+    }
+
+    /**
+     * Gets the save format for the date type. Derives the format based on the following validation sequence:
+     * - if `dateControlSave` is set in `Yii::$app->params`, it will be first used
+     * - else, the format as set in `displaySettings` will be used from this module
+     * - else, the format as set in `Yii::$app->formatter` will be used
+     *
+     * @param $type the attribute type whether date, datetime, or time
+     * @return mixed|string
+     */
+    public function getSaveFormat($type)
+    {
+        if (!empty(Yii::$app->params['dateControlSave'][$type])) {
+            return Yii::$app->params['dateControlSave'][$type];
+        } elseif (!empty($this->saveSettings[$type])) {
+            return $this->saveSettings[$type];
+        } else {
+            $attrib = $type . 'Format';
+            $format = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
+            return $format;
+        }
+    }
+
+    /**
+     * Gets the default options for the `\kartik\widgets` based on `type`
+     *
+     * @param $type
+     * @param $format
+     * @return array
+     */
+    public static function defaultWidgetOptions($type, $format)
+    {
+        $options = [];
+        if (!empty($format) && $type !== self::FORMAT_TIME) {
+            $options['convertFormat'] = true;
+            $options['pluginOptions']['format'] = $format;
+        } elseif (!empty($format) && $type === self::FORMAT_TIME) {
+            $options['pluginOptions']['showSeconds'] = (strpos($format, 's') > 0) ? true : false;
+            $options['pluginOptions']['showMeridian'] = (strpos($format, 'a') > 0 || strpos($format, 'A') > 0) ? true : false;
+        }
+        return $options;
     }
 }
