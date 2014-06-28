@@ -71,7 +71,7 @@ use kartik\datecontrol\Module;
 
         // default settings for each widget from kartik\widgets used when autoWidget is true
         'autoWidgetSettings' => [
-            Module::FORMAT_DATE => ['type'=>2, 'pluginOptions'=>['autoClose'=>true]], // example
+            Module::FORMAT_DATE => ['type'=>2, 'pluginOptions'=>['autoclose'=>true]], // example
             Module::FORMAT_DATETIME => [], // setup if needed
             Module::FORMAT_TIME => [], // setup if needed
         ],
