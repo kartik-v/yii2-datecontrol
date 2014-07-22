@@ -80,6 +80,11 @@ class Module extends \yii\base\Module
     public $convertAction = '/datecontrol/parse/convert';
 
     /**
+     *
+     * @var boolean controls if `saveFormat`is done by ajax call to $convertAction or by JS.
+     */
+    public $ajaxConversion = false;
+    /**
      * Initializes the module
      */
     public function init()

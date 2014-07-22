@@ -16,6 +16,8 @@ use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
 use yii\web\View;
 use yii\web\JsExpression;
+use IntlDateFormatter;
+use DateTime;
 
 /**
  * DateControl widget enables you to control the formatting of date/time separately in View (display) and Model (save).
@@ -236,6 +238,42 @@ class DateControl extends \kartik\widgets\InputWidget
         return null;
     }
 
+    protected function getIntTranslation(){
+        $key = 'dateTranslation-' . $this->language;
+        $cache = Yii::$app->cache;
+        $out = (isset($cache)) ? $cache->get($key) : false;
+        if ($out === false){    
+            if (extension_loaded('intl') && substr($this->language, 0, 2) != 'en'){
+                $fmt = new IntlDateFormatter($this->language, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
+                $date = new DateTime('NOW');
+
+                for ($i = 1; $i <= 12; $i++){
+                    $date->setDate(2014, $i, 1);
+                    $fmt->setPattern('MMM');
+                    $out['shortMonthsInYear'][] = Html::encode($fmt->format($date), true);
+                    $fmt->setPattern('MMMM');
+                    $out['longMonthsInYear'][] = Html::encode($fmt->format($date), true);
+                }
+
+                for ($i = 1; $i <= 7; $i++){
+                    $date->setDate(2014, 6 , $i);
+                    $fmt->setPattern('E');
+                    $out['shortDaysInWeek'][] = Html::encode($fmt->format($date), true);
+                    $fmt->setPattern('EEEE');
+                    $out['DaysInWeek'][] = Html::encode($fmt->format($date), true);
+                }
+                $fmt->setPattern('a');
+                $date->setTime(10, 00, 00);
+                $out['meridium'][] = Html::encode($fmt->format($date), true);
+                $date->setTime(20, 00, 00);
+                $out['meridium'][] = Html::encode($fmt->format($date), true);
+                $out = Json::encode($out);
+                if (isset($cache)) {$cache->set($key, $out, 60);}
+            }
+        }
+        return $out;
+    }
+    
     /**
      * Registers assets
      */
@@ -246,15 +284,19 @@ class DateControl extends \kartik\widgets\InputWidget
         $this->pluginOptions = [
             'idDisp' => $this->options['id'],
             'idSave' => $this->saveOptions['id'],
-            'url' => Url::to([$this->_module->convertAction]),
+            'url' => ($this->_module->ajaxConversion)? Url::to([$this->_module->convertAction]) : '',
             'type' => $this->type,
             'saveFormat' => $this->saveFormat,
             'dispFormat' => $this->displayFormat,
         ];
-        $this->registerPluginOptions('datecontrol');
-        if ($this->isWidget()) {
-            unset($this->options['data-plugin-name'], $this->options['data-plugin-options']);
+        $this->registerPlugin('datecontrol');
+        $this->options['options']['data-datecontrol-obj'] = $this->options['data-plugin-options'];
+        unset($this->options['data-plugin-name'], $this->options['data-plugin-options']);
+        $translation = $this->getIntTranslation();
+        if ($translation !== false){
+            $js = '$.fn.datecontrol.defaults = ' . $translation .  ';';
+            $view->registerJs($js);
         }
-        $view->registerJs("parseDateControl({$this->_hashVar});");
+        
     }
 }
