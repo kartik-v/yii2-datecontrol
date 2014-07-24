@@ -1,3 +1,13 @@
+version 1.2.0
+=============
+**Date:** 2014-07-24
+
+1. (enh #14, #15): Revamped and enhanced datecontrol plugin to work with the [php-date-formatter.js](https://github.com/kartik-v/php-date-formatter) jQuery plugin.
+2. The extension now has an option to either use `ajaxConversion` OR use client level javascript validation to convert date. Ajax conversion is disabled by default.
+3. Change and Keydown events revamped. The extension now automatically listens to the UP and DOWN presses for the DatePicker widget.
+4. Preconfigured locales matching DatePicker. Includes a locales folder for date settings configuration for each language.
+5. Ability to override locale date settings at runtime for each DateControl widget instance.
+
 version 1.1.0
 =============
 **Date:** 2014-06-26

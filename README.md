@@ -12,7 +12,7 @@ for extension break if you do not wish to auto update dependencies.
 
 ## Why Date Control?
 
-> Version 1.1.0 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
+> Version 1.2.0 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
 
 When working with the great Yii Framework, one of the most common observations I had was the need to have a proper control on the date settings. The date settings for each 
 Yii application, are unique to each application and region. Most Yii developers or users almost always need an option of displaying date and time in ONE specific format, 
@@ -68,6 +68,9 @@ use kartik\datecontrol\Module;
         
         // automatically use kartik\widgets for each of the above formats
         'autoWidget' => true,
+        
+        // use ajax conversion for processing dates from display format to save format.
+        'ajaxConversion' => false,
 
         // default settings for each widget from kartik\widgets used when autoWidget is true
         'autoWidgetSettings' => [

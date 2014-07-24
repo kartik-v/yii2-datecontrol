@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2013
  * @package yii2-datecontrol
- * @version 1.0.0
+ * @version 1.2.0
  */
 
 namespace kartik\datecontrol;
@@ -79,6 +79,15 @@ class Module extends \yii\base\Module
      */
     public $convertAction = '/datecontrol/parse/convert';
 
+    /**
+     * @var boolean, whether to use ajax based date conversion from display to save formats. If 
+     * set to false, the plugin will use php-date-formatter.js to convert to the set formats using 
+     * client side validation.
+     *
+     * @see https://github.com/kartik-v/php-date-formatter
+     */
+    public $ajaxConversion = false;
+    
     /**
      * Initializes the module
      */

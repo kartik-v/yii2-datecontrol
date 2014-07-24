@@ -11,19 +11,17 @@ namespace kartik\datecontrol;
 use Yii;
 
 /**
- * Asset bundle for DateControl Widget
+ * Asset bundle for PHP Date Formatter
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class DateControlAsset extends \kartik\widgets\AssetBundle
+class DateFormatterAsset extends \kartik\widgets\AssetBundle
 {
-    public $depends = ['kartik\datecontrol\DateFormatterAsset'];
-    
     public function init()
     {
-        $this->setSourcePath(__DIR__ . '/assets');
-        $this->setupAssets('js', ['js/datecontrol']);
+        $this->setSourcePath('@vendor/kartik-v/php-date-formatter');
+        $this->setupAssets('js', ['js/php-date-formatter']);
         parent::init();
     }
 

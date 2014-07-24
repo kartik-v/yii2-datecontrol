@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-datecontrol
- * @version 1.0.0
+ * @version 1.2.0
  */
 
 namespace kartik\datecontrol;
@@ -16,6 +16,7 @@ use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
 use yii\web\View;
 use yii\web\JsExpression;
+use DateTime;
 
 /**
  * DateControl widget enables you to control the formatting of date/time separately in View (display) and Model (save).
@@ -33,6 +34,11 @@ class DateControl extends \kartik\widgets\InputWidget
      * @var string data type to use for the displayed date control. One of the FORMAT constants.
      */
     public $type = self::FORMAT_DATE;
+    
+    /**
+     * @var boolean whether to use ajaxConversion to process date format for the widget.
+     */
+    public $ajaxConversion;    
 
     /**
      * @var string the format string for displaying the date. If not set, will automatically use the settings
@@ -90,6 +96,23 @@ class DateControl extends \kartik\widgets\InputWidget
     protected $_widgetSettings = [];
 
     /**
+     * @var boolean whether translation is needed
+     */
+    private $_doTranslate = false;
+    
+    /**
+     * @var array the english date settings
+     */
+    private $_enSettings = [
+        'days' => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        'daysShort' => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        'months' => ['January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'],
+        'monthsShort' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        'meridiem' => ['AM', 'PM']
+    ];
+    
+    /**
      * Initializes widget
      *
      * @throws \yii\base\InvalidConfigException
@@ -101,6 +124,14 @@ class DateControl extends \kartik\widgets\InputWidget
         $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
         $this->saveOptions['id'] = $this->options['id'];
         $this->options['id'] = $this->options['id'] . '-disp';
+        $this->_doTranslate = isset($this->language) && substr($this->language, 0, 2) != 'en';
+        if (!isset($this->ajaxConversion)) {
+            $this->ajaxConversion = $this->_module->ajaxConversion;
+        }
+        if ($this->_doTranslate && $this->autoWidget) {
+            $this->_widgetSettings[$this->type]['options']['pluginOptions']['language'] = $this->language;
+        }
+        $this->setLocale();
     }
 
     /**
@@ -223,38 +254,99 @@ class DateControl extends \kartik\widgets\InputWidget
     /**
      * Gets the formatted display date value
      *
-     * @param $data the input date data
+     * @param string $data the input date data
      * @return string
      */
     protected function getDisplayValue($data)
     {
         //return Yii::$app->formatter->format($data, [$this->type, $this->displayFormat]);
-        $date = \DateTime::createFromFormat($this->saveFormat, $data);
-        if ($date instanceof \DateTime) {
-            return $date->format($this->displayFormat);
+        $date = DateTime::createFromFormat($this->saveFormat, $data);
+        if ($date instanceof DateTime) {
+            $value = $date->format($this->displayFormat);
+            if ($this->_doTranslate) {
+                $value = $this->translateDate($value, $this->displayFormat);
+            }
+            return $value;
         }
         return null;
     }
 
+    /**
+     * Translate the date string
+     * @param string $data the input date data
+     * @param string $format the input date format
+     * @return string the translated date
+     */
+    protected function translateDate($data, $format) {
+        $out = $data;
+        if (strpos($format, 'F') > 0) { // long month
+            $out = $this->translate($out, 'months');
+        }
+        if (strpos($format, 'l') > 0) { // long days
+            $out = $this->translate($out, 'days');
+        }
+        if (strpos($format, 'M') > 0) { // short month
+            $out = $this->translate($out, 'monthsShort');
+        }
+        if (strpos($format, 'D') > 0) { // short days
+            $out = $this->translate($out, 'daysShort');
+        }
+        if (strpos($format, 'A') > 0) { // meridiem
+            $out = $this->translate($out, 'meridiem');
+        }
+        if (strpos($format, 'a') > 0) { // meridiem
+            $out = strtolower($this->translate($out, 'meridiem'));
+        }
+        return $out;
+    }
+    
+    /**
+     * Translate a date pattern based on type
+     * @param string $string input date string
+     * @param string $type the type of date pattern as set in [[$_enSettings]]
+     * @return string the translated string
+     */
+    protected function translate($string, $type) {
+        if (empty($this->pluginOptions['dateSettings'][$type])) {
+            return $string;
+        }
+        $pairs = array_combine($this->_enSettings[$type], $this->pluginOptions['dateSettings'][$type]);
+        return strtr($string, $pairs);
+    }
+    
+    /**
+     * Sets the locale using the locales configuration settings 
+     */
+    protected function setLocale() {
+        if (!$this->_doTranslate || !empty($this->pluginOptions['dateSettings'])) {
+            return;
+        }
+        $s = DIRECTORY_SEPARATOR;
+        $file = __DIR__ . "{$s}locales{$s}{$this->language}{$s}dateSettings.php";
+        if (file_exists($file)) {
+            $this->pluginOptions['dateSettings'] = require_once($file);
+        }
+    }
+    
     /**
      * Registers assets
      */
     protected function registerAssets()
     {
         $view = $this->getView();
+        DateFormatterAsset::register($view);
         DateControlAsset::register($view);
-        $this->pluginOptions = [
-            'idDisp' => $this->options['id'],
+        $pluginOptions = empty($this->pluginOptions) ? [] : $this->pluginOptions;
+        $this->pluginOptions = ArrayHelper::merge([
             'idSave' => $this->saveOptions['id'],
-            'url' => Url::to([$this->_module->convertAction]),
+            'url' => $this->ajaxConversion ? Url::to([$this->_module->convertAction]) : '',
             'type' => $this->type,
             'saveFormat' => $this->saveFormat,
             'dispFormat' => $this->displayFormat,
-        ];
-        $this->registerPluginOptions('datecontrol');
+        ], $pluginOptions);
+        $this->registerPlugin('datecontrol');
         if ($this->isWidget()) {
             unset($this->options['data-plugin-name'], $this->options['data-plugin-options']);
         }
-        $view->registerJs("parseDateControl({$this->_hashVar});");
     }
 }
