@@ -13,7 +13,8 @@
         }
     ],
     "require": {
-        "kartik-v/yii2-widgets": "*"
+        "kartik-v/yii2-widgets": "*",
+        "kartik-v/php-date-formatter": "*"
     },
     "autoload": {
         "psr-4": {
