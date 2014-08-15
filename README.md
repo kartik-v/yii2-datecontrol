@@ -10,6 +10,9 @@ Note: Yii 2 framework is still in active development, and until a fully stable Y
 may be updated when you install or update this extension. You may need to lock your composer package versions for your specific app, and test 
 for extension break if you do not wish to auto update dependencies.
 
+With version v1.2.0 this extension now depends on the new Krajee jQuery library [php-date-formatter](http://plugins.krajee.com/php-date-formatter).
+The extension can thus now easily read date & time stamps consistently in ONE format (PHP DateTime) across the client and server.
+
 ## Why Date Control?
 
 > Version 1.2.0 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
