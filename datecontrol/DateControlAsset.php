@@ -18,7 +18,9 @@ use Yii;
  */
 class DateControlAsset extends \kartik\widgets\AssetBundle
 {
-    public $depends = ['kartik\datecontrol\DateFormatterAsset'];
+    public $depends = [
+        'kartik\datecontrol\DateFormatterAsset'
+    ];
     
     public function init()
     {
