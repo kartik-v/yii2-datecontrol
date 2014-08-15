@@ -18,10 +18,6 @@ use Yii;
  */
 class DateFormatterAsset extends \kartik\widgets\AssetBundle
 {
-    public $depends = [
-        'yii\web\JqueryAsset',
-        'yii\web\YiiAsset',
-    ];
     
     public function init()
     {
