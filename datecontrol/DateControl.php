@@ -285,15 +285,17 @@ class DateControl extends \kartik\widgets\InputWidget
     {
         //return Yii::$app->formatter->format($data, [$this->type, $this->displayFormat]);
         $date = DateTime::createFromFormat($this->saveFormat, $data);
-        if ($this->saveTimezone != null) {
-            $date = DateTime::createFromFormat($this->saveFormat, $data, new DateTimeZone($this->saveTimezone));
-        } else {
-            $date = DateTime::createFromFormat($this->saveFormat, $data);
-        }
-        if ($this->displayTimezone != null) {
-            $date->setTimezone(new DateTimeZone($this->displayTimezone));
+        if ($date instanceof DateTime) {
+            if ($this->saveTimezone != null) {
+                $date = DateTime::createFromFormat($this->saveFormat, $data, new DateTimeZone($this->saveTimezone));
+            } else {
+                $date = DateTime::createFromFormat($this->saveFormat, $data);
+            }
         }
         if ($date instanceof DateTime) {
+            if ($this->displayTimezone != null) {
+                $date->setTimezone(new DateTimeZone($this->displayTimezone));
+            }
             $value = $date->format($this->displayFormat);
             if ($this->_doTranslate) {
                 $value = $this->translateDate($value, $this->displayFormat);
