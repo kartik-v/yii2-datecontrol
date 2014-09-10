@@ -56,14 +56,14 @@ class DateControl extends \kartik\widgets\InputWidget
     /**
      * @var string the timezone for the displayed date. If not set, no timezone
      * setting will be applied for formatting.
-     * @see http://php.net/manual/en/class.datetimezone.php
+     * @see http://php.net/manual/en/timezones.php
      */
     public $displayTimezone;
 
     /**
      * @var string the timezone for the saved date. If not set, no timezone
      * setting will be applied for formatting.
-     * @see http://php.net/manual/en/class.datetimezone.php
+     * @see http://php.net/manual/en/timezones.php
      */
     public $saveTimezone;
     
