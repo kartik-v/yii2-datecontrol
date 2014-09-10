@@ -15,7 +15,7 @@ The extension can thus now easily read date & time stamps consistently in ONE fo
 
 ## Why Date Control?
 
-> Version 1.2.0 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
+> Version 1.3.0 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
 
 When working with the great Yii Framework, one of the most common observations I had was the need to have a proper control on the date settings. The date settings for each 
 Yii application, are unique to each application and region. Most Yii developers or users almost always need an option of displaying date and time in ONE specific format, 
@@ -97,6 +97,13 @@ use kartik\datecontrol\Module;
     ]
 ];
 ```
+
+## Params Configuration
+
+The extension allows configuration of `dateControlDisplay` and `dateControlSave` settings at Yii application params level. The params configuration will override the settings at the module level. 
+This configuration is useful when one wants to dynamically change these params settings at runtime. The settings can be overridden at DateControl widget level.
+
+Refer the [defaulting rules documentation](http://demos.krajee.com/datecontrol#defaults) for details.
 
 ## DateControl
 
