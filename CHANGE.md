@@ -1,3 +1,9 @@
+version 1.3.0
+=============
+**Date:** 2014-07-24
+
+1. enh #18: Included timezone support for display and save formats (requires `ajaxConversion`).
+
 version 1.2.0
 =============
 **Date:** 2014-07-24

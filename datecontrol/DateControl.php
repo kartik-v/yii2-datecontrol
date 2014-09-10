@@ -3,11 +3,13 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-datecontrol
- * @version 1.2.0
+ * @version 1.3.0
  */
 
 namespace kartik\datecontrol;
 
+use DateTime;
+use DateTimeZone;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -16,7 +18,6 @@ use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
 use yii\web\View;
 use yii\web\JsExpression;
-use DateTime;
 
 /**
  * DateControl widget enables you to control the formatting of date/time separately in View (display) and Model (save).
@@ -52,6 +53,20 @@ class DateControl extends \kartik\widgets\InputWidget
      */
     public $saveFormat;
 
+    /**
+     * @var array the PHP Date Timezone for the displayed date. If not set, no timezone
+     * setting will be applied for formatting.
+     * @see http://php.net/manual/en/class.datetimezone.php
+     */
+    public $displayTimezone;
+
+    /**
+     * @var array the PHP Date Timezone for the saved date. If not set, no timezone
+     * setting will be applied for formatting.
+     * @see http://php.net/manual/en/class.datetimezone.php
+     */
+    public $saveTimezone;
+    
     /**
      * @var bool whether to automatically use \kartik\widgets based on `$type`. Will use these widgets:
      * - \kartik\widgets\DatePicker for FORMAT_DATE
@@ -120,14 +135,17 @@ class DateControl extends \kartik\widgets\InputWidget
     public function init()
     {
         $this->initModule();
+        if (!isset($this->ajaxConversion)) {
+            $this->ajaxConversion = $this->_module->ajaxConversion;
+        }
+        if (!$this->ajaxConversion && ($this->displayTimezone != null || $this->saveTimezone != null)) {
+            throw new InvalidConfigException("You must set 'ajaxConversion' to 'true' when using time-zones for display or save.");
+        }
         parent::init();
         $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
         $this->saveOptions['id'] = $this->options['id'];
         $this->options['id'] = $this->options['id'] . '-disp';
         $this->_doTranslate = isset($this->language) && substr($this->language, 0, 2) != 'en';
-        if (!isset($this->ajaxConversion)) {
-            $this->ajaxConversion = $this->_module->ajaxConversion;
-        }
         if ($this->_doTranslate && $this->autoWidget) {
             $this->_widgetSettings[$this->type]['options']['pluginOptions']['language'] = $this->language;
         }
@@ -160,6 +178,12 @@ class DateControl extends \kartik\widgets\InputWidget
         }
         if (empty($this->saveFormat)) {
             $this->saveFormat = $this->_module->getSaveFormat($this->type);
+        }
+        if (empty($this->displayTimezone)) {
+            $this->displayTimezone = $this->_module->getDisplayTimezone();
+        }
+        if (empty($this->saveTimezone)) {
+            $this->saveTimezone = $this->_module->getSaveTimezone();
         }
         if ($this->autoWidget) {
             $this->_widgetSettings = [
@@ -261,6 +285,14 @@ class DateControl extends \kartik\widgets\InputWidget
     {
         //return Yii::$app->formatter->format($data, [$this->type, $this->displayFormat]);
         $date = DateTime::createFromFormat($this->saveFormat, $data);
+        if ($this->saveTimezone != null) {
+            $date = DateTime::createFromFormat($this->saveFormat, $data, new DateTimeZone($this->saveTimezone));
+        } else {
+            $date = DateTime::createFromFormat($this->saveFormat, $data);
+        }
+        if ($this->displayTimezone != null) {
+            $date->setTimezone(new DateTimeZone($this->displayTimezone));
+        }
         if ($date instanceof DateTime) {
             $value = $date->format($this->displayFormat);
             if ($this->_doTranslate) {
@@ -343,6 +375,8 @@ class DateControl extends \kartik\widgets\InputWidget
             'type' => $this->type,
             'saveFormat' => $this->saveFormat,
             'dispFormat' => $this->displayFormat,
+            'saveTimezone' => $this->saveTimezone,
+            'dispTimezone' => $this->displayTimezone,
         ], $pluginOptions);
         $this->registerPlugin('datecontrol');
         if ($this->isWidget()) {

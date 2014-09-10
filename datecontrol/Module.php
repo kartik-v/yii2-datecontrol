@@ -44,6 +44,20 @@ class Module extends \yii\base\Module
     public $saveSettings = [];
 
     /**
+     * @var array the PHP Date Timezone for the displayed date. If not set, no timezone
+     * setting will be applied for formatting.
+     * @see http://php.net/manual/en/class.datetimezone.php
+     */
+    public $displayTimezone;
+
+    /**
+     * @var array the PHP Date Timezone for the saved date. If not set, no timezone
+     * setting will be applied for formatting.
+     * @see http://php.net/manual/en/class.datetimezone.php
+     */
+    public $saveTimezone;
+    
+    /**
      * @var bool whether to automatically use \kartik\widgets based on `$type`. Will use these widgets:
      * - \kartik\widgets\DatePicker for Module::FORMAT_DATE
      * - \kartik\widgets\TimePicker for Module::FORMAT_TIME
@@ -137,6 +151,34 @@ class Module extends \yii\base\Module
             ],
         ];
         $this->autoWidgetSettings = ArrayHelper::merge($settings, $this->autoWidgetSettings);
+    }
+
+    /**
+     * Gets the display timezone
+     * @return string 
+     */
+    public function getDisplayTimezone() {
+        if (!empty(Yii::$app->params['dateControlDisplayTimezone'])) {
+            return Yii::$app->params['dateControlDisplayTimezone'];
+        } elseif (!empty($this->displayTimezone)) {
+            return $this->displayTimezone;
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Gets the save timezone
+     * @return string
+     */
+    public function getSaveTimezone() {
+        if (!empty(Yii::$app->params['dateControlSaveTimezone'])) {
+            return Yii::$app->params['dateControlSaveTimezone'];
+        } elseif (!empty($this->saveTimezone)) {
+            return $this->saveTimezone;
+        } else {
+            return null;
+        }
     }
 
     /**

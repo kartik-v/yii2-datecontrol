@@ -1,17 +1,17 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.2.0
+ * @version 1.3.0
  *
  * Date control validation plugin
  * 
  * Author: Kartik Visweswaran
- * Copyright: 2013, Kartik Visweswaran, Krajee.com
+ * Copyright: 2014, Kartik Visweswaran, Krajee.com
  * For more JQuery plugins visit http://plugins.krajee.com
  * For more Yii related demos visit http://demos.krajee.com
  */
 
 (function ($) {
-    function isEmpty(value, trim) {
+    var isEmpty = function(value, trim) {
         return value === null || value === undefined || value == []
             || value === '' || trim && $.trim(value) === '';
     };
@@ -32,12 +32,14 @@
             self.reqType = options.type;
             self.dispFormat = options.dispFormat;
             self.saveFormat = options.saveFormat;
+            self.dispTimezone = options.dispTimezone;
+            self.saveTimezone = options.saveTimezone;
             self.dateFormatter = new DateFormatter(vSettings);
         },
         listen: function () {
             var self = this, $el = self.$element, $idSave = self.$idSave, vUrl = self.url,
                 vType = self.reqType, vDispFormat = self.dispFormat, vSaveFormat = self.saveFormat,
-                vFormatter = self.dateFormatter;
+                vDispTimezone = self.dispTimezone, vSaveTimezone = self.saveTimezone, vFormatter = self.dateFormatter;
             $el.on('change', function () {
                 if (isEmpty($el.val())) {
                     $idSave.val('');
@@ -58,7 +60,9 @@
                                 displayDate: $el.val(),
                                 type: vType,
                                 dispFormat: vDispFormat,
-                                saveFormat: vSaveFormat
+                                saveFormat: vSaveFormat,
+                                dispTimezone: vDispTimezone,
+                                saveTimezone: vSaveTimezone
                             },
                             success: function (data) {
                                 if (data.status == "success") {
@@ -145,7 +149,9 @@
             longMonths: ['January', 'February', 'March', 'April', 'May', 'June',
                 'July', 'August', 'September', 'October', 'November', 'December'],
             meridiem: ['AM', 'PM']
-        }
+        },
+        dispTimezone: null,
+        saveTimezone: null
     };
 
 }(jQuery));
