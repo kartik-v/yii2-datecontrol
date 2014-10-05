@@ -3,6 +3,7 @@ version 1.3.0
 **Date:** 2014-07-24
 
 1. enh #18: Included timezone support for display and save formats (requires `ajaxConversion`).
+2. PSR 4 alias change
 
 version 1.2.0
 =============
