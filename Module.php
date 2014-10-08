@@ -11,6 +11,7 @@ namespace kartik\datecontrol;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\FormatConverter;
 
 /**
  * Date control module for Yii Framework 2.0
@@ -199,8 +200,14 @@ class Module extends \yii\base\Module
         } else {
             $attrib = $type . 'Format';
             $format = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
-            return $format;
-        }
+            if (strncmp($format, 'php:', 4) === 0) {
+                return substr($format, 4);
+            } elseif ($format != ''){
+                return FormatConverter::convertDateIcuToPhp($format, $type);
+            } else {
+                throw InvalidConfigException('No display date in Module configured and formatter component not configured also.');
+            }
+        }    
     }
 
     /**

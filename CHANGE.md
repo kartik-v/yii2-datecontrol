@@ -1,3 +1,9 @@
+version 1.3.1
+=============
+**Date:** 2014-10-08
+
+1. changed(Enrica): communication change with yii::$app->formatter. It provides ICU terms which have to be converted with new yii helper FormatterConverter.
+
 version 1.3.0
 =============
 **Date:** 2014-07-24
