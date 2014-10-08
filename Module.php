@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2013
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-datecontrol
- * @version 1.3.0
+ * @version 1.4.0
  */
 
 namespace kartik\datecontrol;
@@ -11,6 +11,7 @@ namespace kartik\datecontrol;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\FormatConverter;
 
 /**
  * Date control module for Yii Framework 2.0
@@ -187,7 +188,7 @@ class Module extends \yii\base\Module
      * - else, the format as set in `displaySettings` will be used from this module
      * - else, the format as set in `Yii::$app->formatter` will be used
      *
-     * @param $type the attribute type whether date, datetime, or time
+     * @param string $type the attribute type whether date, datetime, or time
      * @return mixed|string
      */
     public function getDisplayFormat($type)
@@ -197,10 +198,8 @@ class Module extends \yii\base\Module
         } elseif (!empty($this->displaySettings[$type])) {
             return $this->displaySettings[$type];
         } else {
-            $attrib = $type . 'Format';
-            $format = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
-            return $format;
-        }
+            return self::parseFormat($type);
+        }    
     }
 
     /**
@@ -209,7 +208,7 @@ class Module extends \yii\base\Module
      * - else, the format as set in `displaySettings` will be used from this module
      * - else, the format as set in `Yii::$app->formatter` will be used
      *
-     * @param $type the attribute type whether date, datetime, or time
+     * @param string $type the attribute type whether date, datetime, or time
      * @return mixed|string
      */
     public function getSaveFormat($type)
@@ -219,17 +218,36 @@ class Module extends \yii\base\Module
         } elseif (!empty($this->saveSettings[$type])) {
             return $this->saveSettings[$type];
         } else {
-            $attrib = $type . 'Format';
-            $format = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
-            return $format;
+            return self::parseFormat($type, 'save');
         }
     }
 
     /**
+     * Parses date format based on attribute type using yii\helpers\FormatConverter
+     *
+     * @param string $type the attribute type whether date, datetime, or time
+     * @param string $tag whether 'display' or 'save' classification
+     * @return mixed|string
+     * @throws InvalidConfigException
+     */
+    protected static function parseFormat($type, $tag = 'display')
+    {
+        $attrib = $type . 'Format';
+        $format = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
+        if (strncmp($format, 'php:', 4) === 0) {
+            return substr($format, 4);
+        } elseif ($format != ''){
+            return FormatConverter::convertDateIcuToPhp($format, $type);
+        } else {
+            throw InvalidConfigException("Error parsing {$tag} date format in DateControl module.");
+        }
+    }
+    
+    /**
      * Gets the default options for the `\kartik\widgets` based on `type`
      *
-     * @param $type
-     * @param $format
+     * @param string $type
+     * @param string $format
      * @return array
      */
     public static function defaultWidgetOptions($type, $format)

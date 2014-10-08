@@ -1,3 +1,9 @@
+version 1.4.0
+=============
+**Date:** 2014-10-08
+
+1. enh #21: Enhance date format conversion based on new yii helper `FormatConverter` (enrica).
+
 version 1.3.0
 =============
 **Date:** 2014-07-24
