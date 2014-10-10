@@ -65,7 +65,13 @@ use kartik\datecontrol\Module;
             Module::FORMAT_TIME => 'HH:mm:ss a',
             Module::FORMAT_DATETIME => 'dd-MM-yyyy HH:mm:ss a', 
         ],
-        
+    
+        // set your display timezone
+        'displayTimezone' => 'Asia/Kolkata',
+
+        // set your timezone for date saved to db
+        'saveTimezone' => 'UTC',
+    
         // format settings for saving each date attribute (PHP format example)
         'saveSettings' => [
             Module::FORMAT_DATE => 'php:U', // saves as unix timestamp
