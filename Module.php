@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-datecontrol
- * @version 1.4.0
+ * @version 1.5.0
  */
 
 namespace kartik\datecontrol;
@@ -101,7 +101,7 @@ class Module extends \yii\base\Module
      *
      * @see https://github.com/kartik-v/php-date-formatter
      */
-    public $ajaxConversion = false;
+    public $ajaxConversion = true;
     
     /**
      * Initializes the module
@@ -131,18 +131,13 @@ class Module extends \yii\base\Module
     protected function initAutoWidget()
     {
         $format = $this->getDisplayFormat(self::FORMAT_TIME);
+        
         $settings = [
             self::FORMAT_DATE => [
                 'convertFormat' => true,
-                'pluginOptions' => [
-                    'format' => $this->getDisplayFormat(self::FORMAT_DATE)
-                ]
             ],
             self::FORMAT_DATETIME => [
                 'convertFormat' => true,
-                'pluginOptions' => [
-                    'format' => $this->getDisplayFormat(self::FORMAT_DATETIME)
-                ]
             ],
             self::FORMAT_TIME => [
                 'pluginOptions' => [
@@ -194,12 +189,14 @@ class Module extends \yii\base\Module
     public function getDisplayFormat($type)
     {
         if (!empty(Yii::$app->params['dateControlDisplay'][$type])) {
-            return Yii::$app->params['dateControlDisplay'][$type];
+            $value = Yii::$app->params['dateControlDisplay'][$type];
         } elseif (!empty($this->displaySettings[$type])) {
-            return $this->displaySettings[$type];
+            $value = $this->displaySettings[$type];
         } else {
-            return self::parseFormat($type);
-        }    
+            $attrib = $type . 'Format';
+            $value = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
+        }
+        return self::parseFormat($value, $type);
     }
 
     /**
@@ -214,32 +211,27 @@ class Module extends \yii\base\Module
     public function getSaveFormat($type)
     {
         if (!empty(Yii::$app->params['dateControlSave'][$type])) {
-            return Yii::$app->params['dateControlSave'][$type];
+            $value = Yii::$app->params['dateControlSave'][$type];
         } elseif (!empty($this->saveSettings[$type])) {
-            return $this->saveSettings[$type];
+            $value = $this->saveSettings[$type];
         } else {
-            return self::parseFormat($type, 'save');
+            $attrib = $type . 'Format';
+            $value = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
         }
+        return self::parseFormat($value, $type);
     }
-
+    
     /**
-     * Parses date format based on attribute type using yii\helpers\FormatConverter
-     *
-     * @param string $type the attribute type whether date, datetime, or time
-     * @param string $tag whether 'display' or 'save' classification
-     * @return mixed|string
-     * @throws InvalidConfigException
+     * Parse and return format understood by PHP DateTime
      */
-    protected static function parseFormat($type, $tag = 'display')
+    public static function parseFormat($format, $type)
     {
-        $attrib = $type . 'Format';
-        $format = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
         if (strncmp($format, 'php:', 4) === 0) {
             return substr($format, 4);
-        } elseif ($format != ''){
+        } elseif ($format != '') {
             return FormatConverter::convertDateIcuToPhp($format, $type);
         } else {
-            throw InvalidConfigException("Error parsing {$tag} date format in DateControl module.");
+           throw InvalidConfigException("Error parsing '{$type}' format.");
         }
     }
     

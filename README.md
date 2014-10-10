@@ -11,11 +11,12 @@ may be updated when you install or update this extension. You may need to lock y
 for extension break if you do not wish to auto update dependencies.
 
 With version v1.2.0 this extension now depends on the new Krajee jQuery library [php-date-formatter](http://plugins.krajee.com/php-date-formatter).
-The extension can thus now easily read date & time stamps consistently in ONE format (PHP DateTime) across the client and server.
+The extension can thus now easily read date & time stamps consistently in ONE format (PHP DateTime) across the client and server. However, it is 
+recommended to use `ajaxConversion` if you need seamless integration with PHP DateTime functions like timezone support.
 
 ## Why Date Control?
 
-> Version 1.3.0 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
+> Version 1.5.0 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
 
 When working with the great Yii Framework, one of the most common observations I had was the need to have a proper control on the date settings. The date settings for each 
 Yii application, are unique to each application and region. Most Yii developers or users almost always need an option of displaying date and time in ONE specific format, 
@@ -55,18 +56,18 @@ use kartik\datecontrol\Module;
    'datecontrol' =>  [
         'class' => 'kartik\datecontrol\Module',
         
-        // format settings for displaying each date attribute
+        // format settings for displaying each date attribute (ICU format example)
         'displaySettings' => [
-            Module::FORMAT_DATE => 'd-M-Y',
+            Module::FORMAT_DATE => 'dd-MM-yyyy',
             Module::FORMAT_TIME => 'H:i:s A',
-            Module::FORMAT_DATETIME => 'd-M-Y H:i:s A',
+            Module::FORMAT_DATETIME => 'dd-MM-yyyy H:i:s A', 
         ],
         
-        // format settings for saving each date attribute
+        // format settings for saving each date attribute (PHP format example)
         'saveSettings' => [
-            Module::FORMAT_DATE => 'U', // saves as unix timestamp
-            Module::FORMAT_TIME => 'H:i:s',
-            Module::FORMAT_DATETIME => 'Y-m-d H:i:s',
+            Module::FORMAT_DATE => 'php:U', // saves as unix timestamp
+            Module::FORMAT_TIME => 'php:H:i:s',
+            Module::FORMAT_DATETIME => 'php:Y-m-d H:i:s',
         ]
         
         // automatically use kartik\widgets for each of the above formats
@@ -108,11 +109,12 @@ Refer the [defaulting rules documentation](http://demos.krajee.com/datecontrol#d
 ## DateControl
 
 The main widget for rendering each date control on your views. Many settings will be defaulted from the module setup, but can be overridden
-at the widget level. An usage example with `ActiveForm` and using `\kartik\widgets\DateTimePicker` is shown below.
+at the widget level. An usage example with `ActiveForm` and using `\kartik\widgets\DateTimePicker` is shown below. Note you can pass date-time
+formats as supported by ICU or PHP. To set a PHP date time format - prepend the format string with `php:` as shown below.
 
 ```php
 echo $form->field($model, 'datetime_2')->widget(DateControl::classname(), [
-    'displayFormat' => 'd-M-Y H:i:s',
+    'displayFormat' => 'php:d-M-Y H:i:s',
     'type'=>DateControl::FORMAT_DATETIME
 ]);
 ```

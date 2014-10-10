@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-datecontrol
- * @version 1.4.0
+ * @version 1.5.0
  */
 
 namespace kartik\datecontrol\controllers;
@@ -42,7 +42,7 @@ class ParseController extends \yii\web\Controller
             if (empty($date) || !$date) {
                 $value = '';
             } elseif ($saveTimezone != null) {
-                $date->setTimezone(new DateTimeZone($saveTimezone))->format($saveFormat);
+                $value = $date->setTimezone(new DateTimeZone($saveTimezone))->format($saveFormat);
             } else {
                 $value = $date->format($saveFormat);
             }
@@ -51,5 +51,5 @@ class ParseController extends \yii\web\Controller
             echo Json::encode(['status' => 'error', 'output' => 'No display date found']);
         }
     }
-
+    
 }

@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-datecontrol
- * @version 1.4.0
+ * @version 1.5.0
  */
 
 namespace kartik\datecontrol;
@@ -15,6 +15,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
+use yii\helpers\FormatConverter;
 use yii\base\InvalidConfigException;
 use yii\web\View;
 use yii\web\JsExpression;
@@ -175,9 +176,13 @@ class DateControl extends \kartik\widgets\InputWidget
         $this->_widgetSettings = $this->_module->widgetSettings;
         if (empty($this->displayFormat)) {
             $this->displayFormat = $this->_module->getDisplayFormat($this->type);
+        } else {
+            $this->displayFormat = Module::parseFormat($this->displayFormat, $this->type);
         }
         if (empty($this->saveFormat)) {
             $this->saveFormat = $this->_module->getSaveFormat($this->type);
+        } else {
+            $this->saveFormat = Module::parseFormat($this->saveFormat, $this->type);
         }
         if (empty($this->displayTimezone)) {
             $this->displayTimezone = $this->_module->getDisplayTimezone();

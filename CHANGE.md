@@ -1,3 +1,9 @@
+version 1.5.0
+=============
+**Date:** 2014-10-10
+
+1. enh #22: Extension revamped to support PHP and ICU date formats 
+
 version 1.4.0
 =============
 **Date:** 2014-10-08
