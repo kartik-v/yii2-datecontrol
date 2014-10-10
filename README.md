@@ -68,7 +68,7 @@ use kartik\datecontrol\Module;
             Module::FORMAT_DATE => 'php:U', // saves as unix timestamp
             Module::FORMAT_TIME => 'php:H:i:s',
             Module::FORMAT_DATETIME => 'php:Y-m-d H:i:s',
-        ]
+        ],
         
         // automatically use kartik\widgets for each of the above formats
         'autoWidget' => true,
