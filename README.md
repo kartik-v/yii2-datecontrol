@@ -14,6 +14,9 @@ With version v1.2.0 this extension now depends on the new Krajee jQuery library 
 The extension can thus now easily read date & time stamps consistently in ONE format (PHP DateTime) across the client and server. However, it is 
 recommended to use `ajaxConversion` if you need seamless integration with PHP DateTime functions like timezone support.
 
+> NOTE: Version 1.5.0 has BC breaking changes. It supports both ICU and PHP date format patterns. In order to pass a PHP Date format - prepend your 
+format pattern with the string `php:`. 
+
 ## Why Date Control?
 
 > Version 1.5.0 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
