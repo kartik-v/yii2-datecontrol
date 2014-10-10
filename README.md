@@ -63,7 +63,7 @@ use kartik\datecontrol\Module;
         'displaySettings' => [
             Module::FORMAT_DATE => 'dd-MM-yyyy',
             Module::FORMAT_TIME => 'HH:mm:ss a',
-            Module::FORMAT_DATETIME => 'dd-MM-yyyy HH:mm:ss A', 
+            Module::FORMAT_DATETIME => 'dd-MM-yyyy HH:mm:ss a', 
         ],
         
         // format settings for saving each date attribute (PHP format example)
