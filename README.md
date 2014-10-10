@@ -77,7 +77,7 @@ use kartik\datecontrol\Module;
         'autoWidget' => true,
         
         // use ajax conversion for processing dates from display format to save format.
-        'ajaxConversion' => false,
+        'ajaxConversion' => true,
 
         // default settings for each widget from kartik\widgets used when autoWidget is true
         'autoWidgetSettings' => [
