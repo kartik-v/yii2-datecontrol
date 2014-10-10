@@ -59,8 +59,8 @@ use kartik\datecontrol\Module;
         // format settings for displaying each date attribute (ICU format example)
         'displaySettings' => [
             Module::FORMAT_DATE => 'dd-MM-yyyy',
-            Module::FORMAT_TIME => 'H:i:s A',
-            Module::FORMAT_DATETIME => 'dd-MM-yyyy H:i:s A', 
+            Module::FORMAT_TIME => 'HH:mm:ss a',
+            Module::FORMAT_DATETIME => 'dd-MM-yyyy HH:mm:ss A', 
         ],
         
         // format settings for saving each date attribute (PHP format example)
