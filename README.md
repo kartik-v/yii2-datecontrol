@@ -91,8 +91,8 @@ use kartik\datecontrol\Module;
         'widgetSettings' => [
             Module::FORMAT_DATE => [
                 'class' => 'yii\jui\DatePicker', // example
-                'dateFormat' => 'php:d-M-Y',
                 'options' => [
+                    'dateFormat' => 'php:d-M-Y',
                     'options'=>['class'=>'form-control'],
                 ]
             ]
