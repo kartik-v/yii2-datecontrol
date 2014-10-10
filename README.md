@@ -93,7 +93,7 @@ use kartik\datecontrol\Module;
                 'class' => 'yii\jui\DatePicker', // example
                 'options' => [
                     'dateFormat' => 'php:d-M-Y',
-                    'options'=>['class'=>'form-control'],
+                    'options' => ['class'=>'form-control'],
                 ]
             ]
         ]
