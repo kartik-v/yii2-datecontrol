@@ -197,7 +197,7 @@ class DateControl extends \kartik\base\InputWidget
                 self::FORMAT_DATETIME => ['class' => '\kartik\datetime\DateTimePicker'],
                 self::FORMAT_TIME => ['class' => '\kartik\time\TimePicker'],
             ];
-            Config::validateInputWidget($this->_widgetSettings[$this->type], "for DateControl '{$type}' format");
+            Config::validateInputWidget($this->_widgetSettings[$this->type]['class'], "for DateControl '{$this->type}' format");
             foreach ($this->_widgetSettings as $type => $setting) {
                 $this->_widgetSettings[$type]['options'] = $this->_module->autoWidgetSettings[$type];
             }
