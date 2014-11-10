@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-datecontrol
- * @version 1.5.0
+ * @version 1.6.0
  */
 
 namespace kartik\datecontrol;
@@ -19,6 +19,7 @@ use yii\helpers\FormatConverter;
 use yii\base\InvalidConfigException;
 use yii\web\View;
 use yii\web\JsExpression;
+use kartik\base\Config;
 
 /**
  * DateControl widget enables you to control the formatting of date/time separately in View (display) and Model (save).
@@ -26,7 +27,7 @@ use yii\web\JsExpression;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class DateControl extends \kartik\widgets\InputWidget
+class DateControl extends \kartik\base\InputWidget
 {
     const FORMAT_DATE = 'date';
     const FORMAT_TIME = 'time';
@@ -70,9 +71,9 @@ class DateControl extends \kartik\widgets\InputWidget
     
     /**
      * @var bool whether to automatically use \kartik\widgets based on `$type`. Will use these widgets:
-     * - \kartik\widgets\DatePicker for FORMAT_DATE
-     * - \kartik\widgets\TimePicker for FORMAT_TIME
-     * - \kartik\widgets\DateTimePicker for FORMAT_DATETIME
+     * - \kartik\date\DatePicker for FORMAT_DATE
+     * - \kartik\time\TimePicker for FORMAT_TIME
+     * - \kartik\datetime\DateTimePicker for FORMAT_DATETIME
      * If not set, this will default to `true.`
      */
     public $autoWidget;
@@ -192,16 +193,12 @@ class DateControl extends \kartik\widgets\InputWidget
         }
         if ($this->autoWidget) {
             $this->_widgetSettings = [
-                self::FORMAT_DATE => ['class' => '\kartik\widgets\DatePicker'],
-                self::FORMAT_DATETIME => ['class' => '\kartik\widgets\DateTimePicker'],
-                self::FORMAT_TIME => ['class' => '\kartik\widgets\TimePicker'],
+                self::FORMAT_DATE => ['class' => '\kartik\date\DatePicker'],
+                self::FORMAT_DATETIME => ['class' => '\kartik\datetime\DateTimePicker'],
+                self::FORMAT_TIME => ['class' => '\kartik\time\TimePicker'],
             ];
+            Config::validateInputWidget($this->_widgetSettings[$this->type], "for DateControl '{$type}' format");
             foreach ($this->_widgetSettings as $type => $setting) {
-                if (empty($setting['class']) || !class_exists($setting['class'])) {
-                    $message = empty($setting['class']) ? "No class was setup for the key '{$type}'." :
-                        "The class '" . $setting['class'] . "' setup for key '{$type} is invalid.";
-                    throw new InvalidConfigException('Invalid widgetSettings in Date Control module config. ' . $message);
-                }
                 $this->_widgetSettings[$type]['options'] = $this->_module->autoWidgetSettings[$type];
             }
         }

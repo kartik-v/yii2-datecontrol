@@ -3,13 +3,6 @@ yii2-datecontrol
 
 The **Date Control** module allows controlling date formats of attributes separately for View and Model for Yii Framework 2.0.
 
-> NOTE: This extension depends on the [kartik-v/yii2-widgets](https://github.com/kartik-v/yii2-widgets) extension which in turn depends on the
-[yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2/tree/master/extensions/bootstrap) extension. Check the 
-[composer.json](https://github.com/kartik-v/yii2-datecontrol/blob/master/composer.json) for this extension's requirements and dependencies. 
-Note: Yii 2 framework is still in active development, and until a fully stable Yii2 release, your core yii2-bootstrap packages (and its dependencies) 
-may be updated when you install or update this extension. You may need to lock your composer package versions for your specific app, and test 
-for extension break if you do not wish to auto update dependencies.
-
 With version v1.2.0 this extension now depends on the new Krajee jQuery library [php-date-formatter](http://plugins.krajee.com/php-date-formatter).
 The extension can thus now easily read date & time stamps consistently in ONE format (PHP DateTime) across the client and server. However, it is 
 recommended to use `ajaxConversion` if you need seamless integration with PHP DateTime functions like timezone support.
@@ -19,7 +12,7 @@ be parsed as a ICU date pattern. In order to pass a PHP Date format - prepend yo
 
 ## Why Date Control?
 
-> Version 1.5.0 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
+> Version 1.6.0 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
 
 When working with the great Yii Framework, one of the most common observations I had was the need to have a proper control on the date settings. The date settings for each 
 Yii application, are unique to each application and region. Most Yii developers or users almost always need an option of displaying date and time in ONE specific format, 
@@ -43,9 +36,9 @@ as well. Thus all client model validations and other jquery events needed by Pic
 > NOTE: All date and time formats used across this module follow one standard - i.e. [PHP Date Time format strings](http://php.net/manual/en/function.date.php#refsect1-function.date-parameters). The extension automatically
 provides three widgets to display and control the date-time inputs. 
 
-- [\kartik\widgets\DatePicker](http://demos.krajee.com/widget-details/datepicker) if your format type is `date`
-- [\kartik\widgets\TimePicker](http://demos.krajee.com/widget-details/timepicker) if your format type is `time`
-- [\kartik\widgets\DateTimePicker](http://demos.krajee.com/widget-details/datetimepicker) if your format type is `datetime`
+- [\kartik\widgets\DatePicker](http://demos.krajee.com/widget-details/datepicker) or [\kartik\date\DatePicker](http://demos.krajee.com/widget-details/datepicker) if your format type is `date`
+- [\kartik\widgets\TimePicker](http://demos.krajee.com/widget-details/timepicker) or [\kartik\time\TimePicker](http://demos.krajee.com/widget-details/timepicker)if your format type is `time`
+- [\kartik\widgets\DateTimePicker](http://demos.krajee.com/widget-details/datetimepicker) or [\kartik\time\DateTimePicker](http://demos.krajee.com/widget-details/datetimepicker) if your format type is `datetime`
 
 
 ## Module
@@ -135,7 +128,8 @@ You can see detailed [documentation and usage](http://demos.krajee.com/datecontr
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-> Note: You must set the `minimum-stability` to `dev` in the **composer.json** file in your application root folder before installation of this extension.
+> Note: Check the [composer.json](https://github.com/kartik-v/yii2-datecontrol/blob/master/composer.json) for this extension's requirements and dependencies. 
+Read this [web tip /wiki](http://webtips.krajee.com/setting-composer-minimum-stability-application/) on setting the `minimum-stability` settings for your application's composer.json.
 
 Either run
 

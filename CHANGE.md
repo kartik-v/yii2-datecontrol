@@ -1,25 +1,32 @@
+version 1.6.0
+=============
+**Date:** 10-Nov-2014
+
+- Set dependency on Krajee base component.
+- Set release to stable.
+
 version 1.5.0
 =============
-**Date:** 2014-10-10
+**Date:** 10-Oct-2014
 
 1. enh #22: Extension revamped to support PHP and ICU date formats 
 
 version 1.4.0
 =============
-**Date:** 2014-10-08
+**Date:** 08-Oct-2014
 
 1. enh #21: Enhance date format conversion based on new yii helper `FormatConverter` (enrica).
 
 version 1.3.0
 =============
-**Date:** 2014-07-24
+**Date:** 24-Jul-2014
 
 1. enh #18: Included timezone support for display and save formats (requires `ajaxConversion`).
 2. PSR 4 alias change
 
 version 1.2.0
 =============
-**Date:** 2014-07-24
+**Date:** 24-Jul-2014
 
 1. (enh #14, #15): Revamped and enhanced datecontrol plugin to work with the [php-date-formatter.js](https://github.com/kartik-v/php-date-formatter) jQuery plugin.
 2. The extension now has an option to either use `ajaxConversion` OR use client level javascript validation to convert date. Ajax conversion is disabled by default.
@@ -29,7 +36,7 @@ version 1.2.0
 
 version 1.1.0
 =============
-**Date:** 2014-06-26
+**Date:** 26-Jun-2014
 
 1. (bug #3): Fix AutoWidget Plugin Options using right array merge.
 2. (enh #4): Fix documentation to include right namespace for Module.
@@ -43,5 +50,5 @@ version 1.1.0
 
 version 1.0.0
 =============
-**Date:** 2014-06-01
+**Date:** 01-Jun-2014
 Initial release
