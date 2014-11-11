@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-datecontrol
@@ -96,6 +95,11 @@ class DateControl extends \kartik\base\InputWidget
      * - 'label': string, any label to be placed before the input. Will be only displayed if 'type' is 'text'.
      */
     public $saveOptions = [];
+    
+    /**
+     * @var boolean Asynchronous Ajax Request?
+     */
+    public $asyncRequest = true;
 
     /**
      * @var string display attribute name
@@ -381,6 +385,7 @@ class DateControl extends \kartik\base\InputWidget
             'dispFormat' => $this->displayFormat,
             'saveTimezone' => $this->saveTimezone,
             'dispTimezone' => $this->displayTimezone,
+            'asyncRequest' => $this->asyncRequest,
         ], $pluginOptions);
         $this->registerPlugin('datecontrol');
         if ($this->isWidget()) {
