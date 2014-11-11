@@ -26,7 +26,7 @@
         constructor: DateControl,
         init: function (options) {
             var self = this,
-                vSettings = isEmpty(options.dateSettings) ? {} : {dateSettings: options.dateSettings};
+            vSettings = isEmpty(options.dateSettings) ? {} : {dateSettings: options.dateSettings};
             self.$idSave = $("#" + options.idSave);
             self.url = options.url;
             self.reqType = options.type;
@@ -34,12 +34,23 @@
             self.saveFormat = options.saveFormat;
             self.dispTimezone = options.dispTimezone;
             self.saveTimezone = options.saveTimezone;
+            self.asyncRequest = options.asyncRequest;
             self.dateFormatter = new DateFormatter(vSettings);
         },
         listen: function () {
-            var self = this, $el = self.$element, $idSave = self.$idSave, vUrl = self.url,
-                vType = self.reqType, vDispFormat = self.dispFormat, vSaveFormat = self.saveFormat,
-                vDispTimezone = self.dispTimezone, vSaveTimezone = self.saveTimezone, vFormatter = self.dateFormatter;
+            var self = this, 
+                
+                $el = self.$element, 
+                $idSave = self.$idSave, 
+                
+                vUrl = self.url,
+                vType = self.reqType, 
+                vDispFormat = self.dispFormat, 
+                vSaveFormat = self.saveFormat,
+                vDispTimezone = self.dispTimezone, 
+                vSaveTimezone = self.saveTimezone, 
+                vFormatter = self.dateFormatter,
+                vAsyncRequest = self.asyncRequest;
             $el.on('change', function () {
                 if (isEmpty($el.val())) {
                     $idSave.val('');
@@ -55,6 +66,7 @@
                         $.ajax({
                             url: vUrl,
                             type: "post",
+                            async: vAsyncRequest,
                             dataType: "json",
                             data: {
                                 displayDate: $el.val(),
