@@ -98,6 +98,13 @@ class DateControl extends \kartik\base\InputWidget
     public $saveOptions = [];
 
     /**
+     * @var boolean whether to fire an asynchronous ajax request. Defaults to `true`.
+     * You can set this to `false` for cases, where you need this to be fired synchronously.
+     * For example when using this widget as a filter in \kartik\grid\GridView.
+     */
+    public $asyncRequest = true;
+    
+    /**
      * @var string display attribute name
      */
     protected $_displayAttribName;
@@ -393,6 +400,7 @@ class DateControl extends \kartik\base\InputWidget
             'dispFormat' => $this->displayFormat,
             'saveTimezone' => $this->saveTimezone,
             'dispTimezone' => $this->displayTimezone,
+            'asyncRequest' => $this->asyncRequest
         ], $pluginOptions);
         $this->registerPlugin('datecontrol');
         if ($this->isWidget()) {

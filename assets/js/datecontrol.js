@@ -34,12 +34,14 @@
             self.saveFormat = options.saveFormat;
             self.dispTimezone = options.dispTimezone;
             self.saveTimezone = options.saveTimezone;
+            self.asyncRequest = options.asyncRequest;
             self.dateFormatter = new DateFormatter(vSettings);
         },
         listen: function () {
             var self = this, $el = self.$element, $idSave = self.$idSave, vUrl = self.url,
                 vType = self.reqType, vDispFormat = self.dispFormat, vSaveFormat = self.saveFormat,
-                vDispTimezone = self.dispTimezone, vSaveTimezone = self.saveTimezone, vFormatter = self.dateFormatter;
+                vDispTimezone = self.dispTimezone, vSaveTimezone = self.saveTimezone, 
+                vAsyncRequest = self.asyncRequest, vFormatter = self.dateFormatter;
             $el.on('change', function () {
                 if (isEmpty($el.val())) {
                     $idSave.val('');
@@ -56,6 +58,7 @@
                             url: vUrl,
                             type: "post",
                             dataType: "json",
+                            async: vAsyncRequest,
                             data: {
                                 displayDate: $el.val(),
                                 type: vType,
