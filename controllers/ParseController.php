@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-datecontrol
- * @version 1.6.0
+ * @version 1.7.0
  */
 
 namespace kartik\datecontrol\controllers;
@@ -34,10 +34,19 @@ class ParseController extends \yii\web\Controller
             $dispFormat = ArrayHelper::getValue($post, 'dispFormat');
             $dispTimezone = ArrayHelper::getValue($post, 'dispTimezone');
             $saveTimezone = ArrayHelper::getValue($post, 'saveTimezone');
+            $dispDate = $post['displayDate'];
+            /**
+             * Fix to prevent DateTime defaulting the time 
+             * part to current time, for FORMAT_DATE
+             */
+            if ($type == Module::FORMAT_DATE) {
+                $dispDate .= " 00:00:00";
+                $dispFormat .= " H:i:s";
+            }
             if ($dispTimezone != null) {
-                $date = DateTime::createFromFormat($dispFormat, $post['displayDate'], new DateTimeZone($dispTimezone));
+                $date = DateTime::createFromFormat($dispFormat, $dispDate, new DateTimeZone($dispTimezone));
             } else {
-                $date = DateTime::createFromFormat($dispFormat, $post['displayDate']);
+                $date = DateTime::createFromFormat($dispFormat, $dispDate);
             }
             if (empty($date) || !$date) {
                 $value = '';

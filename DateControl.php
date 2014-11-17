@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-datecontrol
- * @version 1.6.0
+ * @version 1.7.0
  */
 
 namespace kartik\datecontrol;
@@ -287,11 +287,23 @@ class DateControl extends \kartik\base\InputWidget
     {
         //return Yii::$app->formatter->format($data, [$this->type, $this->displayFormat]);
         $date = DateTime::createFromFormat($this->saveFormat, $data);
+
+        /**
+         * Fix to prevent DateTime defaulting the time 
+         * part to current time, for FORMAT_DATE
+         */
+        $saveDate = $data;
+        $saveFormat = $this->saveFormat;
+        if ($this->type == self::FORMAT_DATE) {
+            $saveDate .= " 00:00:00";
+            $saveFormat .= " H:i:s";            
+        }
+        
         if ($date instanceof DateTime) {
             if ($this->saveTimezone != null) {
-                $date = DateTime::createFromFormat($this->saveFormat, $data, new DateTimeZone($this->saveTimezone));
+                $date = DateTime::createFromFormat($saveFormat, $saveDate, new DateTimeZone($this->saveTimezone));
             } else {
-                $date = DateTime::createFromFormat($this->saveFormat, $data);
+                $date = DateTime::createFromFormat($saveFormat, $saveDate);
             }
         }
         if ($date instanceof DateTime) {

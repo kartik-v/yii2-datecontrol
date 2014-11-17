@@ -1,9 +1,15 @@
+version 1.7.0
+=============
+**Date:** 17-Nov-2014
+
+- enh #28, #29: DateTime createFromFormat wrongly uses current timestamp in time part for bare DATE format.
+- Set release to stable.
+
 version 1.6.0
 =============
 **Date:** 10-Nov-2014
 
 - Set dependency on Krajee base component.
-- Set release to stable.
 
 version 1.5.0
 =============
