@@ -154,7 +154,8 @@
             meridiem: ['AM', 'PM']
         },
         dispTimezone: null,
-        saveTimezone: null
+        saveTimezone: null,
+        asyncRequest: true
     };
 
 }(jQuery));
