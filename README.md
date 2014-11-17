@@ -1,7 +1,7 @@
 yii2-datecontrol
 ================
 
-The **Date Control** module allows controlling date formats of attributes separately for View and Model for Yii Framework 2.0. It thus allows a easy way to work with dates when displaying to users in one way (format / timezone) but saving it in the database in another way (format / timezone).
+The **Date Control** module allows controlling date formats of attributes separately for View and Model for Yii Framework 2.0. It thus allows an easy way to work with dates when displaying to users in one way (format / timezone) but saving it in the database in another way (format / timezone).
 
 > NOTE: Version 1.5.0 has BC breaking changes. This release now adds supports for both ICU and PHP date format patterns. By default the format will
 be parsed as a ICU date pattern. In order to pass a PHP Date format - prepend your format pattern with the string `php:`. 
@@ -116,6 +116,9 @@ echo $form->field($model, 'datetime_2')->widget(DateControl::classname(), [
     'type'=>DateControl::FORMAT_DATETIME
 ]);
 ```
+
+> NOTE: With version v1.2.0 this extension can use the new Krajee jQuery library [php-date-formatter](http://plugins.krajee.com/php-date-formatter) to perform client side date format conversion instead of using ajax, for basic date formats (without timezone).
+The extension can thus now easily read date & time stamps consistently in ONE format (PHP DateTime) across the client and server. However, it is recommended to use `ajaxConversion` if you need seamless integration with PHP DateTime functions like timezone support.
 
 ### Demo
 You can see detailed [documentation and usage](http://demos.krajee.com/datecontrol) and a [demonstration](http://demos.krajee.com/datecontrol-demo) on the extension.
