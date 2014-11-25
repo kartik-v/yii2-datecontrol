@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-datecontrol
- * @version 1.7.0
+ * @version 1.8.0
  */
 
 namespace kartik\datecontrol;
@@ -28,10 +28,15 @@ use kartik\base\Config;
  * @since 1.0
  */
 class DateControl extends \kartik\base\InputWidget
-{
+{   
     const FORMAT_DATE = 'date';
     const FORMAT_TIME = 'time';
     const FORMAT_DATETIME = 'datetime';
+
+    /**
+     * @inherit doc
+     */
+    protected $_pluginName = 'datecontrol';
 
     /**
      * @var string data type to use for the displayed date control. One of the FORMAT constants.
@@ -151,6 +156,7 @@ class DateControl extends \kartik\base\InputWidget
             throw new InvalidConfigException("You must set 'ajaxConversion' to 'true' when using time-zones for display or save.");
         }
         parent::init();
+        $this->setDataVar($this->_pluginName);
         $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
         $this->saveOptions['id'] = $this->options['id'];
         $this->options['id'] = $this->options['id'] . '-disp';
@@ -402,9 +408,10 @@ class DateControl extends \kartik\base\InputWidget
             'dispTimezone' => $this->displayTimezone,
             'asyncRequest' => $this->asyncRequest
         ], $pluginOptions);
-        $this->registerPlugin('datecontrol');
-        if ($this->isWidget()) {
-            unset($this->options['data-plugin-name'], $this->options['data-plugin-options']);
+        $this->registerPlugin($this->_pluginName);
+        if ($this->isWidget() && !empty($this->options[$this->_dataVar])) {
+            $this->options['options'][$this->_dataVar] = $this->options[$this->_dataVar];
+            unset($this->options[$this->_dataVar]);
         }
     }
 }

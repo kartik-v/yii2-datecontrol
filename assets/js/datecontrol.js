@@ -1,6 +1,6 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.7.0
+ * @version 1.8.0
  *
  * Date control validation plugin
  * 
