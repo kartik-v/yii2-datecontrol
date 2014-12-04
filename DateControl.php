@@ -156,6 +156,12 @@ class DateControl extends \kartik\base\InputWidget
             throw new InvalidConfigException("You must set 'ajaxConversion' to 'true' when using time-zones for display or save.");
         }
         parent::init();
+        if (!$this->autoWidget && !property_exists($this->widgetClass, 'disabled')) {
+            unset($this->options['disabled']);
+        }
+        if (!$this->autoWidget && !property_exists($this->widgetClass, 'readonly')) {
+            unset($this->options['readonly']);
+        }
         $this->setDataVar($this->_pluginName);
         $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
         $this->saveOptions['id'] = $this->options['id'];
