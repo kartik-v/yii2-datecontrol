@@ -160,9 +160,9 @@ class DateControl extends \kartik\base\InputWidget
         $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
         $this->saveOptions['id'] = $this->options['id'];
         $this->options['id'] = $this->options['id'] . '-disp';
-        $this->_doTranslate = isset($this->language) && substr($this->language, 0, 2) != 'en';
+        $this->_doTranslate = isset($this->language) && $this->language != 'en';
         if ($this->_doTranslate && $this->autoWidget) {
-            $this->_widgetSettings[$this->type]['options']['pluginOptions']['language'] = $this->language;
+            $this->_widgetSettings[$this->type]['options']['language'] = $this->language;
         }
         $this->setLocale();
     }
@@ -213,6 +213,8 @@ class DateControl extends \kartik\base\InputWidget
             Config::validateInputWidget($this->_widgetSettings[$this->type]['class'], "for DateControl '{$this->type}' format");
             foreach ($this->_widgetSettings as $type => $setting) {
                 $this->_widgetSettings[$type]['options'] = $this->_module->autoWidgetSettings[$type];
+                $this->_widgetSettings[$type]['disabled'] = $this->disabled;
+                $this->_widgetSettings[$type]['readonly'] = $this->readonly;
             }
         }
         if (empty($this->widgetClass) && !empty($this->_widgetSettings[$this->type]['class'])) {

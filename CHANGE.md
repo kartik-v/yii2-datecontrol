@@ -1,8 +1,9 @@
 version 1.8.0
 =============
-**Date:** 25-Nov-2014
+**Date:** 04-Dec-2014
 
 - (enh #31): Enhance widget to use updated plugin registration from Krajee base 
+- (enh #33): Auto validate disability using new `disabled` and `readonly` properties in InputWidget
 
 version 1.7.0
 =============
