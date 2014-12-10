@@ -162,7 +162,7 @@ class DateControl extends \kartik\base\InputWidget
         $this->options['id'] = $this->options['id'] . '-disp';
         $this->_doTranslate = isset($this->language) && $this->language != 'en';
         if ($this->_doTranslate && $this->autoWidget) {
-            $this->_widgetSettings[$this->type]['options']['language'] = $this->language;
+           $this->_widgetSettings[$this->type]['options']['language'] = $this->language;
         }
         $this->setLocale();
     }
@@ -392,6 +392,10 @@ class DateControl extends \kartik\base\InputWidget
         }
         $s = DIRECTORY_SEPARATOR;
         $file = __DIR__ . "{$s}locales{$s}{$this->language}{$s}dateSettings.php";
+        if (!file_exists($file)){
+            $langShort = substr($this->language, 0, 2);
+            $file = __DIR__ . "{$s}locales{$s}$langShort{$s}dateSettings.php";
+        }
         if (file_exists($file)) {
             $this->pluginOptions['dateSettings'] = require_once($file);
         }
