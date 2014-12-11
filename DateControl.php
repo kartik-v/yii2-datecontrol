@@ -162,7 +162,7 @@ class DateControl extends \kartik\base\InputWidget
         $this->options['id'] = $this->options['id'] . '-disp';
         $this->_doTranslate = isset($this->language) && $this->language != 'en';
         if ($this->_doTranslate && $this->autoWidget) {
-           $this->_widgetSettings[$this->type]['options']['language'] = $this->language;
+            $this->_widgetSettings[$this->type]['options']['language'] = $this->language;
         }
         $this->setLocale();
     }

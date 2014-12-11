@@ -195,8 +195,9 @@ class Module extends \yii\base\Module
         } else {
             $attrib = $type . 'Format';
             $value = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
+            $value = self::parseFormat($value, $type);
         }
-        return self::parseFormat($value, $type);
+        return $value;
     }
 
     /**
