@@ -393,7 +393,7 @@ class DateControl extends \kartik\base\InputWidget
         $s = DIRECTORY_SEPARATOR;
         $file = __DIR__ . "{$s}locales{$s}{$this->language}{$s}dateSettings.php";
         if (!file_exists($file)){
-            $langShort = substr($this->language, 0, 2);
+            $langShort = Config::getLang($this->language);
             $file = __DIR__ . "{$s}locales{$s}$langShort{$s}dateSettings.php";
         }
         if (file_exists($file)) {
