@@ -1,3 +1,11 @@
+version 1.9.0
+=============
+**Date:** 11-Dec-2014
+
+- (bug #34): Locals with short language code like "de" haven't been found because "prefix" was not in string. 
+- (bug #34): Bug in Module Methods "getDisplayFormat" and "getSaveFormat" converted a correct php format in an incorrect one.
+
+
 version 1.8.0
 =============
 **Date:** 04-Dec-2014
