@@ -1,10 +1,10 @@
 version 1.9.0
 =============
-**Date:** 11-Dec-2014
+**Date:** 13-Dec-2014
 
 - (bug #34): Locals with short language code like "de" haven't been found because "prefix" was not in string. 
 - (bug #34): Bug in Module Methods "getDisplayFormat" and "getSaveFormat" converted a correct php format in an incorrect one.
-
+- (bug #35): Auto convert display and save formats correctly to PHP DateTime format.
 
 version 1.8.0
 =============

@@ -195,9 +195,8 @@ class Module extends \yii\base\Module
         } else {
             $attrib = $type . 'Format';
             $value = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
-            $value = self::parseFormat($value, $type);
         }
-        return $value;
+        return self::parseFormat($value, $type);
     }
 
     /**
@@ -218,9 +217,8 @@ class Module extends \yii\base\Module
         } else {
             $attrib = $type . 'Format';
             $value = isset(Yii::$app->formatter->$attrib) ? Yii::$app->formatter->$attrib : '';
-            $value = self::parseFormat($value, $type);
         }
-        return $value;
+        return self::parseFormat($value, $type);
     }
     
     /**
@@ -249,7 +247,7 @@ class Module extends \yii\base\Module
         $options = [];
         if (!empty($format) && $type !== self::FORMAT_TIME) {
             $options['convertFormat'] = true;
-            $options['pluginOptions']['format'] = $format;
+            $options['pluginOptions']['format'] = 'php:' . $format;
         } elseif (!empty($format) && $type === self::FORMAT_TIME) {
             $options['pluginOptions']['showSeconds'] = (strpos($format, 's') > 0) ? true : false;
             $options['pluginOptions']['showMeridian'] = (strpos($format, 'a') > 0 || strpos($format, 'A') > 0) ? true : false;
