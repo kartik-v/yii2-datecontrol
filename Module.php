@@ -57,7 +57,7 @@ class Module extends \yii\base\Module
      * @see http://php.net/manual/en/timezones.php
      */
     public $saveTimezone;
-    
+
     /**
      * @var bool whether to automatically use \kartik\widgets based on `$type`. Will use these widgets:
      * - \kartik\date\DatePicker for Module::FORMAT_DATE
@@ -95,14 +95,14 @@ class Module extends \yii\base\Module
     public $convertAction = '/datecontrol/parse/convert';
 
     /**
-     * @var boolean, whether to use ajax based date conversion from display to save formats. If 
-     * set to false, the plugin will use php-date-formatter.js to convert to the set formats using 
+     * @var boolean, whether to use ajax based date conversion from display to save formats. If
+     * set to false, the plugin will use php-date-formatter.js to convert to the set formats using
      * client side validation.
      *
      * @see https://github.com/kartik-v/php-date-formatter
      */
     public $ajaxConversion = true;
-    
+
     /**
      * Initializes the module
      */
@@ -118,9 +118,9 @@ class Module extends \yii\base\Module
     public function initSettings()
     {
         $this->saveSettings += [
-            self::FORMAT_DATE => 'Y-m-d',
-            self::FORMAT_TIME => 'H:i:s',
-            self::FORMAT_DATETIME => 'Y-m-d H:i:s',
+            self::FORMAT_DATE => 'php:Y-m-d',
+            self::FORMAT_TIME => 'php:H:i:s',
+            self::FORMAT_DATETIME => 'php:Y-m-d H:i:s',
         ];
         $this->initAutoWidget();
     }
@@ -131,7 +131,7 @@ class Module extends \yii\base\Module
     protected function initAutoWidget()
     {
         $format = $this->getDisplayFormat(self::FORMAT_TIME);
-        
+
         $settings = [
             self::FORMAT_DATE => [
                 'convertFormat' => true,
@@ -151,7 +151,7 @@ class Module extends \yii\base\Module
 
     /**
      * Gets the display timezone
-     * @return string 
+     * @return string
      */
     public function getDisplayTimezone() {
         if (!empty(Yii::$app->params['dateControlDisplayTimezone'])) {
@@ -162,7 +162,7 @@ class Module extends \yii\base\Module
             return null;
         }
     }
-    
+
     /**
      * Gets the save timezone
      * @return string
@@ -220,7 +220,7 @@ class Module extends \yii\base\Module
         }
         return self::parseFormat($value, $type);
     }
-    
+
     /**
      * Parse and return format understood by PHP DateTime
      */
@@ -234,7 +234,7 @@ class Module extends \yii\base\Module
            throw InvalidConfigException("Error parsing '{$type}' format.");
         }
     }
-    
+
     /**
      * Gets the default options for the `\kartik\widgets` based on `type`
      *
