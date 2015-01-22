@@ -198,10 +198,10 @@ class DateControl extends \kartik\base\InputWidget
         } else {
             $this->saveFormat = Module::parseFormat($this->saveFormat, $this->type);
         }
-        if (empty($this->displayTimezone)) {
+        if (!isset($this->displayTimezone)) {
             $this->displayTimezone = $this->_module->getDisplayTimezone();
         }
-        if (empty($this->saveTimezone)) {
+        if (!isset($this->saveTimezone)) {
             $this->saveTimezone = $this->_module->getSaveTimezone();
         }
         if ($this->autoWidget) {
