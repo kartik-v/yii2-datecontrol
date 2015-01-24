@@ -81,6 +81,9 @@
                             },
                             complete: function() {
                                 self.isChanged = false;
+                            },
+                            error: function() {
+                                self.isChanged = false;
                             }
                         });
                     }
