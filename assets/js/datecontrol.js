@@ -1,6 +1,6 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.9.0
+ * @version 1.9.1
  *
  * Date control validation plugin
  * 
@@ -36,6 +36,7 @@
             self.saveTimezone = options.saveTimezone;
             self.asyncRequest = options.asyncRequest;
             self.dateFormatter = new DateFormatter(vSettings);
+            self.isChanged = false;
         },
         listen: function () {
             var self = this, $el = self.$element, $idSave = self.$idSave, vUrl = self.url,
@@ -43,8 +44,13 @@
                 vDispTimezone = self.dispTimezone, vSaveTimezone = self.saveTimezone, 
                 vAsyncRequest = self.asyncRequest, vFormatter = self.dateFormatter;
             $el.on('change', function () {
+                if (self.isChanged) {
+                    return;
+                }
+                self.isChanged = true;
                 if (isEmpty($el.val())) {
                     $idSave.val('');
+                    self.isChanged = false;
                 } else {
                     if (isEmpty(vUrl)) {
                         var vDispDate = vFormatter.parseDate($el.val(), vDispFormat);
@@ -53,6 +59,7 @@
                             $el.val(vFormatter.formatDate(vDispDate, vDispFormat));
                         }
                         $idSave.val(vFormatter.formatDate(vDispDate, vSaveFormat));
+                        self.isChanged = false;
                     } else {
                         $.ajax({
                             url: vUrl,
@@ -71,6 +78,9 @@
                                 if (data.status == "success") {
                                     $idSave.val(data.output);
                                 }
+                            },
+                            complete: function() {
+                                self.isChanged = false;
                             }
                         });
                     }

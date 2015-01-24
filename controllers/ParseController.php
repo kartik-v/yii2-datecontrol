@@ -1,9 +1,10 @@
 <?php
 
 /**
+ * @package   yii2-datecontrol
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-datecontrol
- * @version 1.9.0
+ * @version   1.9.1
  */
 
 namespace kartik\datecontrol\controllers;
@@ -36,7 +37,7 @@ class ParseController extends \yii\web\Controller
             $saveTimezone = ArrayHelper::getValue($post, 'saveTimezone');
             $dispDate = $post['displayDate'];
             /**
-             * Fix to prevent DateTime defaulting the time 
+             * Fix to prevent DateTime defaulting the time
              * part to current time, for FORMAT_DATE
              */
             if ($type == Module::FORMAT_DATE) {
@@ -60,5 +61,5 @@ class ParseController extends \yii\web\Controller
             echo Json::encode(['status' => 'error', 'output' => 'No display date found']);
         }
     }
-    
+
 }

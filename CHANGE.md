@@ -1,3 +1,11 @@
+version 1.9.1
+=============
+**Date:** 25-Jan-2015
+
+- (bug #36): Update default save format settings to php: syntax.
+- (enh #37): Wrong capitalization in 'autoClose'.
+- (bug #42): Prevent double ajax requests due to plugin internal change events getting triggered.
+
 version 1.9.0
 =============
 **Date:** 13-Dec-2014
