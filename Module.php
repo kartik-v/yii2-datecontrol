@@ -22,6 +22,8 @@ use yii\helpers\FormatConverter;
  */
 class Module extends \yii\base\Module
 {
+    const MODULE = 'datecontrol';
+    
     const FORMAT_DATE = 'date';
     const FORMAT_TIME = 'time';
     const FORMAT_DATETIME = 'datetime';

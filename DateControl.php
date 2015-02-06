@@ -30,6 +30,8 @@ use kartik\base\Config;
  */
 class DateControl extends \kartik\base\InputWidget
 {
+    use ModuleTrait;
+
     const FORMAT_DATE = 'date';
     const FORMAT_TIME = 'time';
     const FORMAT_DATETIME = 'datetime';
@@ -161,7 +163,7 @@ class DateControl extends \kartik\base\InputWidget
      */
     public function init()
     {
-        $this->initModule();
+        $this->initConfig();
         if (!isset($this->ajaxConversion)) {
             $this->ajaxConversion = $this->_module->ajaxConversion;
         }
@@ -185,12 +187,9 @@ class DateControl extends \kartik\base\InputWidget
      *
      * @throws \yii\base\InvalidConfigException
      */
-    protected function initModule()
+    protected function initConfig()
     {
-        $this->_module = Yii::$app->getModule('datecontrol');
-        if (empty($this->_module)) {
-            throw new InvalidConfigException("The module 'datecontrol' has not been setup in your configuration file.");
-        }
+        $this->initModule();
         if (!isset($this->autoWidget)) {
             $this->autoWidget = $this->_module->autoWidget;
         }

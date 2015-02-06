@@ -1,10 +1,12 @@
 version 1.9.1
 =============
-**Date:** 25-Jan-2015
+**Date:** 06-Feb-2015
 
 - (bug #36): Update default save format settings to php: syntax.
 - (enh #37): Wrong capitalization in 'autoClose'.
+- (bug #39): Ensure datecontrol is validated on blur.
 - (bug #42): Prevent double ajax requests due to plugin internal change events getting triggered.
+- (bug #43): Allow `datecontrol` module to be used as an embedded submodule.
 
 version 1.9.0
 =============
