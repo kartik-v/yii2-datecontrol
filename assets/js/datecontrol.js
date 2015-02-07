@@ -32,7 +32,6 @@
             self.$idSave = $("#" + options.idSave);
             self.dateFormatter = window.DateFormatter ? new window.DateFormatter(vSettings) : {};
             self.isChanged = false;
-            self.oldValue = null;
         },
         validate: function () {
             var self = this, $el = self.$element, $idSave = self.$idSave, vUrl = self.url,
@@ -90,15 +89,8 @@
             $el.on('change', function () {
                 self.validate();
                 $idSave.trigger('change');
-            }).on('focus', function () {
-                self.oldValue = $el.val();
-            }).on('blur', function () {
-                if ($el.val() !== self.oldValue) {
-                    self.validate();
-                    $idSave.trigger('change');
-                }
             }).on('keydown', function (e) {
-                var vDate, val;
+                var vDate, val, typ;
                 if (isEmpty($el.val()) || isEmpty(vFormatter)) {
                     return;
                 }
@@ -111,16 +103,18 @@
                     val = vDate.getDate() + 39 - (+e.keyCode);
                     vDate.setDate(val);
                     val = vFormatter.formatDate(vDate, vDispFormat);
-                    $el.val(val);
-                    $el.trigger("change");
-
-                    if ($.isFunction($el.parent().datepicker)) {
-                        $el.parent().datepicker('update');
+                    $el.val(val).trigger("change");
+                    typ = $el.attr('data-datepicker-type');
+                    switch (typ) {
+                        case 1:
+                            $el.datepicker('update');
+                            break;
+                        case 5:
+                            $el.parent().parent().datepicker('update');
+                            break;
+                        default:
+                            $el.parent().datepicker('update');
                     }
-                    if ($.isFunction($el.datepicker)) {
-                        $el.datepicker('update');
-                    }
-                    return;
                 }
                 $idSave.trigger('keydown');
             });

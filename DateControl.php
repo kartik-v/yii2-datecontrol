@@ -30,8 +30,6 @@ use kartik\base\Config;
  */
 class DateControl extends \kartik\base\InputWidget
 {
-    use ModuleTrait;
-
     const FORMAT_DATE = 'date';
     const FORMAT_TIME = 'time';
     const FORMAT_DATETIME = 'datetime';
@@ -189,7 +187,7 @@ class DateControl extends \kartik\base\InputWidget
      */
     protected function initConfig()
     {
-        $this->initModule();
+        $this->_module = Config::initModule(Module::classname());
         if (!isset($this->autoWidget)) {
             $this->autoWidget = $this->_module->autoWidget;
         }
