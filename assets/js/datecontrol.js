@@ -105,15 +105,17 @@
                     val = vFormatter.formatDate(vDate, vDispFormat);
                     $el.val(val).trigger("change");
                     typ = $el.attr('data-datepicker-type');
-                    switch (typ) {
-                        case 1:
-                            $el.datepicker('update');
-                            break;
-                        case 5:
-                            $el.parent().parent().datepicker('update');
-                            break;
-                        default:
-                            $el.parent().datepicker('update');
+                    if (!isEmpty(typ)) {
+                        switch (typ) {
+                            case 1:
+                                $el.datepicker('update');
+                                break;
+                            case 5:
+                                $el.parent().parent().datepicker('update');
+                                break;
+                            default:
+                                $el.parent().datepicker('update');
+                        }
                     }
                 }
                 $idSave.trigger('keydown');

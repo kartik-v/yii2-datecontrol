@@ -1,3 +1,9 @@
+version 1.9.2
+=============
+**Date:** 19-Feb-2015
+
+- (bug #50): Pressing up/down keys to increase/decrease timestamp.
+
 version 1.9.1
 =============
 **Date:** 13-Feb-2015
