@@ -35,7 +35,7 @@
         },
         validate: function () {
             var self = this, $el = self.$element, $idSave = self.$idSave, vUrl = self.url,
-                vType = self.reqType, vDispFormat = self.dispFormat, vSaveFormat = self.saveFormat,
+                vType = self.type, vDispFormat = self.dispFormat, vSaveFormat = self.saveFormat,
                 vDispTimezone = self.dispTimezone, vSaveTimezone = self.saveTimezone,
                 vAsyncRequest = self.asyncRequest, vFormatter = self.dateFormatter;
             if (self.isChanged) {
