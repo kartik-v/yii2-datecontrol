@@ -1,6 +1,12 @@
 yii2-datecontrol
 ================
 
+[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-datecontrol/v/stable.svg)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
+[![License](https://poser.pugx.org/kartik-v/yii2-datecontrol/license.svg)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
+[![Total Downloads](https://poser.pugx.org/kartik-v/yii2-datecontrol/downloads.svg)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
+[![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-datecontrol/d/monthly.png)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
+[![Daily Downloads](https://poser.pugx.org/kartik-v/yii2-datecontrol/d/daily.png)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
+
 The **Date Control** module allows controlling date formats of attributes separately for View and Model for Yii Framework 2.0. It thus allows an easy way to work with dates when displaying to users in one way (format / timezone) but saving it in the database in another way (format / timezone).
 
 > NOTE: Version 1.5.0 has BC breaking changes. This release now adds supports for both ICU and PHP date format patterns. By default the format will
