@@ -71,6 +71,7 @@
                         success: function (data) {
                             if (data.status === "success") {
                                 $idSave.val(data.output);
+                                $idSave.trigger('change');
                             }
                         },
                         complete: function () {
@@ -88,7 +89,6 @@
                 vDispFormat = self.dispFormat, vFormatter = self.dateFormatter;
             $el.on('change', function () {
                 self.validate();
-                $idSave.trigger('change');
             }).on('keydown', function (e) {
                 var vDate, val, typ;
                 if (isEmpty($el.val()) || isEmpty(vFormatter)) {
