@@ -1,9 +1,10 @@
 version 1.9.2
 =============
-**Date:** 19-Feb-2015
+**Date:** 02-Jun-2015
 
 - (bug #50): Pressing up/down keys to increase/decrease timestamp.
 - (bug #51): Typo in plugin validation for type.
+- (enh #58, #60): Fix for triggering asynchronous change event.
 
 version 1.9.1
 =============
