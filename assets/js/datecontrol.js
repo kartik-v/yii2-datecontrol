@@ -1,6 +1,6 @@
 /*!
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version 1.9.1
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * @version 1.9.2
  *
  * Date control validation plugin
  * 
@@ -31,6 +31,9 @@
             });
             self.$idSave = $("#" + options.idSave);
             self.dateFormatter = window.DateFormatter ? new window.DateFormatter(vSettings) : {};
+            if (isEmpty(self.dateFormatter)) {
+                throw "No DateFormatter plugin found. Ensure you have 'php-date-formatter.js' loaded.";
+            }
             self.isChanged = false;
         },
         validate: function () {
@@ -43,7 +46,7 @@
             }
             self.isChanged = true;
             if (isEmpty($el.val())) {
-                $idSave.val('');
+                $idSave.val('').trigger('change');
                 self.isChanged = false;
             } else {
                 if (isEmpty(vUrl)) {
@@ -52,7 +55,7 @@
                         vDispDate = vFormatter.guessDate($el.val(), vDispFormat);
                         $el.val(vFormatter.formatDate(vDispDate, vDispFormat));
                     }
-                    $idSave.val(vFormatter.formatDate(vDispDate, vSaveFormat));
+                    $idSave.val(vFormatter.formatDate(vDispDate, vSaveFormat)).trigger('change');
                     self.isChanged = false;
                 } else {
                     $.ajax({
@@ -70,7 +73,7 @@
                         },
                         success: function (data) {
                             if (data.status === "success") {
-                                $idSave.val(data.output);
+                                $idSave.val(data.output).trigger('change');
                             }
                         },
                         complete: function () {
@@ -88,7 +91,6 @@
                 vDispFormat = self.dispFormat, vFormatter = self.dateFormatter;
             $el.on('change', function () {
                 self.validate();
-                $idSave.trigger('change');
             }).on('keydown', function (e) {
                 var vDate, val, typ;
                 if (isEmpty($el.val()) || isEmpty(vFormatter)) {

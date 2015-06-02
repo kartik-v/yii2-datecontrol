@@ -3,8 +3,8 @@
 /**
  * @package   yii2-datecontrol
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   1.9.1
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * @version   1.9.2
  */
 
 namespace kartik\datecontrol\controllers;
@@ -22,12 +22,12 @@ class ParseController extends \yii\web\Controller
     /**
      * Convert display date for saving to model
      *
-     * @returns JSON encoded HTML output
+     * @return string JSON encoded HTML output
      */
     public function actionConvert()
     {
         $output = '';
-        $module = Yii::$app->controller->module;
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $post = Yii::$app->request->post();
         if (isset($post['displayDate'])) {
             $type = empty($post['type']) ? Module::FORMAT_DATE : $post['type'];
@@ -56,9 +56,9 @@ class ParseController extends \yii\web\Controller
             } else {
                 $value = $date->format($saveFormat);
             }
-            echo Json::encode(['status' => 'success', 'output' => $value]);
+            return ['status' => 'success', 'output' => $value];
         } else {
-            echo Json::encode(['status' => 'error', 'output' => 'No display date found']);
+            return ['status' => 'error', 'output' => 'No display date found'];
         }
     }
 
