@@ -139,13 +139,13 @@ Read this [web tip /wiki](http://webtips.krajee.com/setting-composer-minimum-sta
 Either run
 
 ```
-$ php composer.phar require kartik-v/yii2-datecontrol "dev-master"
+$ php composer.phar require kartik-v/yii2-datecontrol "@dev"
 ```
 
 or add
 
 ```
-"kartik-v/yii2-datecontrol": "dev-master"
+"kartik-v/yii2-datecontrol": "@dev"
 ```
 
 to the ```require``` section of your `composer.json` file.
