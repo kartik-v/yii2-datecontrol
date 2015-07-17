@@ -4,7 +4,7 @@
  * @package   yii2-datecontrol
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @version   1.9.2
+ * @version   1.9.3
  */
 
 namespace kartik\datecontrol;
@@ -133,22 +133,12 @@ class DateControl extends \kartik\base\InputWidget
     /**
      * @var array the english date settings
      */
-    private $_enSettings = [
+    private static $_enSettings = [
         'days' => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
         'daysShort' => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
         'months' => [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
+            'January', 'February', 'March', 'April', 'May', 'June', 'July',
+            'August', 'September', 'October', 'November', 'December'
         ],
         'monthsShort' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         'meridiem' => ['AM', 'PM']
@@ -169,6 +159,7 @@ class DateControl extends \kartik\base\InputWidget
             throw new InvalidConfigException("You must set 'ajaxConversion' to 'true' when using time-zones for display or save.");
         }
         parent::init();
+        $this->initLanguage();
         $this->setDataVar($this->_pluginName);
         $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
         $this->saveOptions['id'] = $this->options['id'];
@@ -319,27 +310,14 @@ class DateControl extends \kartik\base\InputWidget
      */
     protected function getDisplayValue($data)
     {
-        //return Yii::$app->formatter->format($data, [$this->type, $this->displayFormat]);
-        $date = DateTime::createFromFormat($this->saveFormat, $data);
-
         /**
          * Fix to prevent DateTime defaulting the time
          * part to current time, for FORMAT_DATE
          */
         $saveDate = $data;
         $saveFormat = $this->saveFormat;
-        if ($this->type == self::FORMAT_DATE) {
-            $saveDate .= " 00:00:00";
-            $saveFormat .= " H:i:s";
-        }
-
-        if ($date instanceof DateTime) {
-            if ($this->saveTimezone != null) {
-                $date = DateTime::createFromFormat($saveFormat, $saveDate, new DateTimeZone($this->saveTimezone));
-            } else {
-                $date = DateTime::createFromFormat($saveFormat, $saveDate);
-            }
-        }
+        $settings = $this->_doTranslate ? ArrayHelper::getValue($this->pluginOptions, 'dateSettings', []) : [];
+        $date = static::getTimestamp($this->type, $saveDate, $saveFormat, $this->saveTimezone, $settings);
         if ($date instanceof DateTime) {
             if ($this->displayTimezone != null) {
                 $date->setTimezone(new DateTimeZone($this->displayTimezone));
@@ -364,23 +342,10 @@ class DateControl extends \kartik\base\InputWidget
     protected function translateDate($data, $format)
     {
         $out = $data;
-        if (strpos($format, 'F') > 0) { // long month
-            $out = $this->translate($out, 'months');
-        }
-        if (strpos($format, 'l') > 0) { // long days
-            $out = $this->translate($out, 'days');
-        }
-        if (strpos($format, 'M') > 0) { // short month
-            $out = $this->translate($out, 'monthsShort');
-        }
-        if (strpos($format, 'D') > 0) { // short days
-            $out = $this->translate($out, 'daysShort');
-        }
-        if (strpos($format, 'A') > 0) { // meridiem
-            $out = $this->translate($out, 'meridiem');
-        }
-        if (strpos($format, 'a') > 0) { // meridiem
-            $out = strtolower($this->translate($out, 'meridiem'));
+        foreach (self::$_enSettings as $key => $value) {
+            if (static::checkFormatKey($format, $key)) {
+                $out = $this->translate($out, $key);
+            }
         }
         return $out;
     }
@@ -398,8 +363,7 @@ class DateControl extends \kartik\base\InputWidget
         if (empty($this->pluginOptions['dateSettings'][$type])) {
             return $string;
         }
-        $pairs = array_combine($this->_enSettings[$type], $this->pluginOptions['dateSettings'][$type]);
-        return strtr($string, $pairs);
+        return str_ireplace(self::$_enSettings[$type], $this->pluginOptions['dateSettings'][$type], $string);
     }
 
     /**
@@ -410,17 +374,102 @@ class DateControl extends \kartik\base\InputWidget
         if (!$this->_doTranslate || !empty($this->pluginOptions['dateSettings'])) {
             return;
         }
-        $s = DIRECTORY_SEPARATOR;
-        $file = __DIR__ . "{$s}locales{$s}{$this->language}{$s}dateSettings.php";
-        if (!file_exists($file)) {
-            $langShort = Config::getLang($this->language);
-            $file = __DIR__ . "{$s}locales{$s}$langShort{$s}dateSettings.php";
-        }
+        $file = static::getLocaleFile($this->language);
         if (file_exists($file)) {
             $this->pluginOptions['dateSettings'] = require_once($file);
         }
     }
 
+    /**
+     * Fetches the locale settings file
+     * @param string $lang the locale/language ISO code
+     * @return string the locale file name
+     */
+    protected static function getLocaleFile($lang)
+    {
+        $s = DIRECTORY_SEPARATOR;
+        $file = __DIR__ . "{$s}locales{$s}{$lang}{$s}dateSettings.php";
+        if (!file_exists($file)) {
+            $langShort = Config::getLang($lang);
+            $file = __DIR__ . "{$s}locales{$s}{$langShort}{$s}dateSettings.php";
+        }
+        return $file;
+    }
+    
+    /**
+     * Parses locale data and returns an english format
+     * @param string $source the date source pattern
+     * @param string $format the date format
+     * @param string $settings the locale/language date settings
+     * @return the converted date source to english
+     */
+    protected static function parseLocale($source, $format, $settings = [])
+    {
+        if (empty($settings)) {
+            return $source;
+        }
+        foreach (self::$_enSettings as $key => $value) {
+            if (!empty($settings[$key]) && static::checkFormatKey($format, $key)) {
+                $source = str_ireplace($settings[$key], $value, $source);
+            }
+        }
+        return $source;
+    }
+    
+    /**
+     * Checks if the format string contains the relevant date format 
+     * pattern based on the passed key.
+     * @param string $format the date format string
+     * @param string $key the key to check
+     * @return boolean
+     */
+    protected static function checkFormatKey($format, $key)
+    {
+        switch ($key) {
+            case 'months':
+                return strpos($format, 'F') > 0;
+            case 'monthsShort':
+                return strpos($format, 'M') > 0;
+            case 'days':
+                return strpos($format, 'l') > 0;
+            case 'daysShort':
+                return strpos($format, 'D') > 0;
+            case 'meridiem':
+                return stripos($format, 'A') > 0;
+            default:
+                return false;
+        }
+    }
+    
+    /**
+     * Parses and normalizes a date source and converts it to a DateTime object
+     * by parsing it based on specified format.
+     * @param string $type the format type FORMAT_DATE, FORMAT_TIME, or FORMAT_DATETIME
+     * @param string $source the date source pattern
+     * @param string $format the date format
+     * @param string $timezone the date timezone
+     * @param string $settings the locale/language date settings
+     * @return DateTime object
+     */
+    public static function getTimestamp($type, $source, $format, $timezone = null, $settings = [])
+    {
+        /**
+         * Fix to prevent DateTime defaulting the time
+         * part to current time, for FORMAT_DATE
+         */
+        if ($type == self::FORMAT_DATE) {
+            $source .= " 00:00:00";
+            $format .= " H:i:s";
+        }
+        $source = static::parseLocale($source, $format, $settings);
+        if ($timezone != null) {
+            $timestamp = DateTime::createFromFormat($format, $source, new DateTimeZone($timezone));
+        } else {
+            $timestamp = DateTime::createFromFormat($format, $source);
+        }
+        return $timestamp;
+    }
+    
     /**
      * Registers assets
      */

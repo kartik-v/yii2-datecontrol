@@ -1,3 +1,9 @@
+version 1.9.3
+=============
+**Date:** 16-Jul-2015
+
+- (enh #66): Localisation format parsing enhancements.
+
 version 1.9.2
 =============
 **Date:** 02-Jun-2015

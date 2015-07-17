@@ -1,6 +1,6 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @version 1.9.2
+ * @version 1.9.3
  *
  * Date control validation plugin
  * 
@@ -9,7 +9,6 @@
  * For more JQuery plugins visit http://plugins.krajee.com
  * For more Yii related demos visit http://demos.krajee.com
  */
-
 (function ($) {
     "use strict";
     var isEmpty = function (value, trim) {
@@ -40,7 +39,7 @@
             var self = this, $el = self.$element, $idSave = self.$idSave, vUrl = self.url,
                 vType = self.type, vDispFormat = self.dispFormat, vSaveFormat = self.saveFormat,
                 vDispTimezone = self.dispTimezone, vSaveTimezone = self.saveTimezone,
-                vAsyncRequest = self.asyncRequest, vFormatter = self.dateFormatter;
+                vAsyncRequest = self.asyncRequest, vFormatter = self.dateFormatter, vSettings;
             if (self.isChanged) {
                 return;
             }
@@ -58,6 +57,7 @@
                     $idSave.val(vFormatter.formatDate(vDispDate, vSaveFormat)).trigger('change');
                     self.isChanged = false;
                 } else {
+                    vSettings = self.language.substring(0, 2) == 'en' ? [] : self.dateSettings;
                     $.ajax({
                         url: vUrl,
                         type: "post",
@@ -69,7 +69,8 @@
                             dispFormat: vDispFormat,
                             saveFormat: vSaveFormat,
                             dispTimezone: vDispTimezone,
-                            saveTimezone: vSaveTimezone
+                            saveTimezone: vSaveTimezone,
+                            settings: vSettings
                         },
                         success: function (data) {
                             if (data.status === "success") {
@@ -143,14 +144,15 @@
     };
 
     $.fn.datecontrol.defaults = {
+        language: 'en',
         dateSettings: {
-            longDays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-            shortDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-            shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            longMonths: [
+            days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            months: [
                 'January', 'February', 'March', 'April', 'May', 'June',
                 'July', 'August', 'September', 'October', 'November', 'December'
             ],
+            monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             meridiem: ['AM', 'PM']
         },
         dispTimezone: null,
