@@ -88,40 +88,10 @@
             }
         },
         listen: function () {
-            var self = this, $el = self.$element, $idSave = self.$idSave,
+            var self = this, $el = self.$element, $idSave = self.$idSave, src,
                 vDispFormat = self.dispFormat, vFormatter = self.dateFormatter;
             $el.on('change', function () {
                 self.validate();
-            }).on('keydown', function (e) {
-                var vDate, val, typ;
-                if (isEmpty($el.val()) || isEmpty(vFormatter)) {
-                    return;
-                }
-                if (e.keyCode === 38 || e.keyCode === 40) { // Up or Down key
-                    vDate = vFormatter.parseDate($el.val(), vDispFormat);
-                    e.preventDefault();
-                    if (!vDate) {
-                        return;
-                    }
-                    val = vDate.getDate() + 39 - (+e.keyCode);
-                    vDate.setDate(val);
-                    val = vFormatter.formatDate(vDate, vDispFormat);
-                    $el.val(val).trigger("change");
-                    typ = $el.attr('data-datepicker-type');
-                    if (!isEmpty(typ)) {
-                        switch (typ) {
-                            case 1:
-                                $el.datepicker('update');
-                                break;
-                            case 5:
-                                $el.parent().parent().datepicker('update');
-                                break;
-                            default:
-                                $el.parent().datepicker('update');
-                        }
-                    }
-                }
-                $idSave.trigger('keydown');
             });
         }
     };
