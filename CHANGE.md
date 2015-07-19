@@ -3,7 +3,7 @@ Change Log: `yii2-datecontrol`
 
 ## version 1.9.3
 
-**Date:** 16-Jul-2015
+**Date:** 19-Jul-2015
 
 - (enh #59): Enhancements for parsing `yii2-widget-datepicker` better.
 - (enh #66): Localisation format parsing enhancements.

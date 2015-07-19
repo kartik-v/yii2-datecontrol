@@ -148,7 +148,7 @@ or add
 "kartik-v/yii2-datecontrol": "@dev"
 ```
 
-to the ```require``` section of your `composer.json` file.
+to the `require` section of your `composer.json` file.
 
 ## Usage
 ```php
