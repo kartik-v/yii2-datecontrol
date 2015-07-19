@@ -7,6 +7,7 @@ Change Log: `yii2-datecontrol`
 
 - (enh #59): Enhancements for parsing `yii2-widget-datepicker` better.
 - (enh #66): Localisation format parsing enhancements.
+- Undo #50 - remove timestamp increase through up/down keys.
 
 ## version 1.9.2
 
