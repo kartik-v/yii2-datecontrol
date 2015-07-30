@@ -4,7 +4,7 @@
  * @package   yii2-datecontrol
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @version   1.9.3
+ * @version   1.9.4
  */
 
 namespace kartik\datecontrol;
@@ -317,8 +317,8 @@ class DateControl extends \kartik\base\InputWidget
         $saveDate = $data;
         $saveFormat = $this->saveFormat;
         $settings = $this->_doTranslate ? ArrayHelper::getValue($this->pluginOptions, 'dateSettings', []) : [];
-        $date = static::getTimestamp($this->type, $saveDate, $saveFormat, $this->saveTimezone, $settings);
-        if ($date instanceof DateTime) {
+        $date = static::getTimestamp($saveDate, $saveFormat, $this->saveTimezone, $settings);
+        if ($date && $date instanceof DateTime) {
             if ($this->displayTimezone != null) {
                 $date->setTimezone(new DateTimeZone($this->displayTimezone));
             }
@@ -376,7 +376,7 @@ class DateControl extends \kartik\base\InputWidget
         }
         $file = static::getLocaleFile($this->language);
         if (file_exists($file)) {
-            $this->pluginOptions['dateSettings'] = require_once($file);
+            $this->pluginOptions['dateSettings'] = require($file);
         }
     }
 
@@ -427,15 +427,15 @@ class DateControl extends \kartik\base\InputWidget
     {
         switch ($key) {
             case 'months':
-                return strpos($format, 'F') > 0;
+                return strpos($format, 'F') !== false;
             case 'monthsShort':
-                return strpos($format, 'M') > 0;
+                return strpos($format, 'M') !== false;
             case 'days':
-                return strpos($format, 'l') > 0;
+                return strpos($format, 'l') !== false;
             case 'daysShort':
-                return strpos($format, 'D') > 0;
+                return strpos($format, 'D') !== false;
             case 'meridiem':
-                return stripos($format, 'A') > 0;
+                return stripos($format, 'A') !== false;
             default:
                 return false;
         }
@@ -444,22 +444,19 @@ class DateControl extends \kartik\base\InputWidget
     /**
      * Parses and normalizes a date source and converts it to a DateTime object
      * by parsing it based on specified format.
-     * @param string $type the format type FORMAT_DATE, FORMAT_TIME, or FORMAT_DATETIME
      * @param string $source the date source pattern
      * @param string $format the date format
      * @param string $timezone the date timezone
      * @param string $settings the locale/language date settings
      * @return DateTime object
      */
-    public static function getTimestamp($type, $source, $format, $timezone = null, $settings = [])
+    public static function getTimestamp($source, $format, $timezone = null, $settings = [])
     {
-        /**
-         * Fix to prevent DateTime defaulting the time
-         * part to current time, for FORMAT_DATE
-         */
-        if ($type == self::FORMAT_DATE) {
-            $source .= " 00:00:00";
-            $format .= " H:i:s";
+        if (empty($source)) {
+            return null;
+        }
+        if (substr($format, 0, 1) !== '!') {
+            $format = '!' . $format;
         }
         $source = static::parseLocale($source, $format, $settings);
         if ($timezone != null) {

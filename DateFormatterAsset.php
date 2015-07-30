@@ -4,7 +4,7 @@
  * @package   yii2-datecontrol
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @version   1.9.3
+ * @version   1.9.4
  */
 
 namespace kartik\datecontrol;

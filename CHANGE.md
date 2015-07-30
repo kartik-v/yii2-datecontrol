@@ -1,6 +1,14 @@
 Change Log: `yii2-datecontrol`
 ==============================
 
+## version 1.9.4
+
+**Date:** 30-Jul-2015
+
+- (enh #67): Allow multiple locale widgets to be parsed correctly on same page.
+- (bug #68): Better `strpos` validation before ajax conversion.
+- (enh #69): Better format conversion to reset unprovided fields to the Unix Epoch.
+
 ## version 1.9.3
 
 **Date:** 19-Jul-2015
