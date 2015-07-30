@@ -455,10 +455,10 @@ class DateControl extends \kartik\base\InputWidget
         if (empty($source)) {
             return null;
         }
+        $source = static::parseLocale($source, $format, $settings);
         if (substr($format, 0, 1) !== '!') {
             $format = '!' . $format;
         }
-        $source = static::parseLocale($source, $format, $settings);
         if ($timezone != null) {
             $timestamp = DateTime::createFromFormat($format, $source, new DateTimeZone($timezone));
         } else {
