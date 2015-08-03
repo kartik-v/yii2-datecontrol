@@ -34,6 +34,10 @@ class ParseController extends \yii\web\Controller
             $dispTimezone = ArrayHelper::getValue($post, 'dispTimezone');
             $saveTimezone = ArrayHelper::getValue($post, 'saveTimezone');
             $settings = ArrayHelper::getValue($post, 'settings', []);
+            if (ArrayHelper::getValue($post, 'type') != DateControl::FORMAT_DATETIME) {
+                $dispTimezone = null;
+                $saveTimezone = null;
+            }
             $date = DateControl::getTimestamp($post['displayDate'], $dispFormat, $dispTimezone, $settings);
             if (empty($date) || !$date) {
                 $value = '';
