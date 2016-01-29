@@ -268,7 +268,7 @@ class DateControl extends \kartik\base\InputWidget
             $this->options = ArrayHelper::merge($this->_widgetSettings[$this->type]['options'], $this->options);
         }
         unset($this->options['model'], $this->options['attribute']);
-        $this->options['name'] = $this->_displayAttribName;
+        isset($this->options['name']) ? : $this->options['name'] = $this->_displayAttribName;
         $this->options['value'] = $value;
         $class = $this->widgetClass;
         if (!property_exists($class, 'disabled')) {
