@@ -10,6 +10,7 @@
 namespace kartik\datecontrol;
 
 use Yii;
+use kartik\base\AssetBundle;
 
 /**
  * Asset bundle for DateControl Widget
@@ -17,20 +18,14 @@ use Yii;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class DateControlAsset extends \kartik\base\AssetBundle
+class DateControlAsset extends AssetBundle
 {
-    /**
-     * @inheritdoc
-     */
-    public $depends = [
-        'kartik\datecontrol\DateFormatterAsset'
-    ];
-
     /**
      * @inheritdoc
      */
     public function init()
     {
+        $this->depends = array_merge($this->depends, ['kartik\datecontrol\DateFormatterAsset']);
         $this->setSourcePath(__DIR__ . '/assets');
         $this->setupAssets('js', ['js/datecontrol']);
         parent::init();
