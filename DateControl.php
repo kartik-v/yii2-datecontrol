@@ -3,39 +3,57 @@
 /**
  * @package   yii2-datecontrol
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
- * @version   1.9.4
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2016
+ * @version   1.9.5
  */
 
 namespace kartik\datecontrol;
 
 use DateTime;
 use DateTimeZone;
+use kartik\base\InputWidget;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
-use yii\helpers\FormatConverter;
 use yii\base\InvalidConfigException;
-use yii\web\View;
-use yii\web\JsExpression;
 use kartik\base\Config;
 
 /**
- * DateControl widget enables you to control the formatting of date/time separately in View (display) and Model (save).
+ * DateControl widget enables you to the formatting of date/time separately for display (View) and saving to
+ * database (Model).
+ *
+ * Usage example:
+ *
+ * ~~~
+ * use kartik\datecontrol\DateControl;
+ * // usage of rendering date control widget as an active field within Yii active form
+ * echo $form->field($model, 'datetime_2')->widget(DateControl::classname(), [
+ *     'displayFormat' => 'php:d-M-Y H:i:s',
+ *     'type' => DateControl::FORMAT_DATETIME
+ * ]);
+ * ~~~
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class DateControl extends \kartik\base\InputWidget
+class DateControl extends InputWidget
 {
+    /**
+     * Date only format type.
+     */
     const FORMAT_DATE = 'date';
+    /**
+     * Time only format type.
+     */
     const FORMAT_TIME = 'time';
+    /**
+     * Date and time format type.
+     */
     const FORMAT_DATETIME = 'datetime';
 
     /**
-     * @inherit doc
+     * @inheritdoc
      */
     protected $_pluginName = 'datecontrol';
 
@@ -50,78 +68,78 @@ class DateControl extends \kartik\base\InputWidget
     public $ajaxConversion;
 
     /**
-     * @var string the format string for displaying the date. If not set, will automatically use the settings
-     * from the Module based on the `type` setting.
+     * @var string the format string for displaying the date. If not set, will automatically use the settings from the
+     * [[Module]] based on the [[type]] property.
      */
     public $displayFormat;
 
     /**
      * @var string the default format string to be save the date as. If not set, will automatically use the settings
-     * from the Module.
+     * from the [[Module]].
      */
     public $saveFormat;
 
     /**
-     * @var string the timezone for the displayed date. If not set, no timezone
-     * setting will be applied for formatting.
+     * @var string the timezone for the displayed date. If not set, no timezone setting will be applied for formatting.
      * @see http://php.net/manual/en/timezones.php
      */
     public $displayTimezone;
 
     /**
-     * @var string the timezone for the saved date. If not set, no timezone
-     * setting will be applied for formatting.
+     * @var string the timezone for the saved date. If not set, no timezone setting will be applied for formatting.
      * @see http://php.net/manual/en/timezones.php
      */
     public $saveTimezone;
 
     /**
-     * @var bool whether to automatically use \kartik\widgets based on `$type`. Will use these widgets:
-     * - \kartik\date\DatePicker for FORMAT_DATE
-     * - \kartik\time\TimePicker for FORMAT_TIME
-     * - \kartik\datetime\DateTimePicker for FORMAT_DATETIME
-     * If not set, this will default to `true.`
+     * @var boolean whether to automatically use \kartik\widgets based on `$type`. Will use these widgets:
+     *
+     * - [[\kartik\date\DatePicker]] when [[type]] is set to [[FORMAT_DATE]]
+     * - [[\kartik\time\TimePicker]] when [[type]] is set to [[FORMAT_TIME]]
+     * - [[\kartik\datetime\DateTimePicker]] when [[type]] is set to [[FORMAT_DATETIME]]
+     *
+     * If this property is not set, this will default to `true.`
      */
     public $autoWidget;
 
     /**
-     * @var string any custom widget class to use. Will only be used if autoWidget is set to `false`.
+     * @var string any custom widget class to use. Will only be used if [[autoWidget]] is set to `false`.
      */
     public $widgetClass;
 
     /**
-     * @var array the HTML attributes for the display input. If a widget is used based on `autoWidget` or `widgetClass`,
-     * this will be considered as the widget options.
+     * @var array the HTML attributes for the display input. If a widget is used based on [[autoWidget]] or
+     * [[widgetClass]], this will be considered as the widget options.
      */
     public $options = [];
 
     /**
-     * @var array the HTML attributes for the base model input that will be saved typically to database.
-     * The following special options are recognized:
-     * - 'type': string, whether to generate a 'hidden' or 'text' input. Defaults to 'hidden'.
-     * - 'label': string, any label to be placed before the input. Will be only displayed if 'type' is 'text'.
+     * @var array the HTML attributes for the base model input that will be saved typically to database. The following
+     * special options are recognized:
+     * - `type`: _string_, whether to generate a 'hidden' or 'text' input. Defaults to 'hidden'.
+     * - `label`: _string_, any label to be placed before the input. Will be only displayed if 'type' is 'text'.
      */
     public $saveOptions = [];
 
     /**
-     * @var boolean whether to fire an asynchronous ajax request. Defaults to `true`.
-     * You can set this to `false` for cases, where you need this to be fired synchronously.
-     * For example when using this widget as a filter in \kartik\grid\GridView.
+     * @var boolean whether to fire an asynchronous ajax request. Defaults to `true`. You can set this to `false` for
+     * cases, where you need this to be fired synchronously. For example when using this widget as a filter in
+     * [[\kartik\grid\GridView]].
      */
     public $asyncRequest = true;
 
     /**
-     * @var string display attribute name
+     * @var string display attribute name.
      */
     protected $_displayAttribName;
 
     /**
-     * @var \kartik\datecontrol\Module the `datecontrol` module instance
+     * @var Module the `datecontrol` module instance.
      */
     protected $_module;
 
     /**
-     * @var array the parsed widget settings from the module
+     * @var array the parsed widget settings from the module.
      */
     protected $_widgetSettings = [];
 
@@ -131,7 +149,7 @@ class DateControl extends \kartik\base\InputWidget
     private $_doTranslate = false;
 
     /**
-     * @var array the english date settings
+     * @var array the english date settings.
      */
     private static $_enSettings = [
         'days' => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
@@ -145,9 +163,7 @@ class DateControl extends \kartik\base\InputWidget
     ];
 
     /**
-     * Initializes widget
-     *
-     * @throws \yii\base\InvalidConfigException
+     * @inheritdoc
      */
     public function init()
     {
@@ -172,9 +188,9 @@ class DateControl extends \kartik\base\InputWidget
     }
 
     /**
-     * Initializes widget based on module settings
+     * Initializes widget based on module settings.
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function initConfig()
     {
@@ -225,9 +241,7 @@ class DateControl extends \kartik\base\InputWidget
     }
 
     /**
-     * Runs widget
-     *
-     * @return string|void
+     * @inheritdoc
      */
     public function run()
     {
@@ -237,9 +251,9 @@ class DateControl extends \kartik\base\InputWidget
     }
 
     /**
-     * Whether a widget is used to render the display
+     * Whether a widget is used to render the display.
      *
-     * @return bool
+     * @return boolean
      */
     protected function isWidget()
     {
@@ -247,7 +261,7 @@ class DateControl extends \kartik\base\InputWidget
     }
 
     /**
-     * Generates the display input
+     * Generates the display input.
      *
      * @return string
      */
@@ -270,6 +284,9 @@ class DateControl extends \kartik\base\InputWidget
         unset($this->options['model'], $this->options['attribute']);
         $this->options['name'] = $this->_displayAttribName;
         $this->options['value'] = $value;
+        /**
+         * @var InputWidget $class
+         */
         $class = $this->widgetClass;
         if (!property_exists($class, 'disabled')) {
             unset($this->options['disabled']);
@@ -281,7 +298,7 @@ class DateControl extends \kartik\base\InputWidget
     }
 
     /**
-     * Generates the save input
+     * Generates the save input.
      *
      * @return string
      */
@@ -302,9 +319,9 @@ class DateControl extends \kartik\base\InputWidget
     }
 
     /**
-     * Gets the formatted display date value
+     * Gets the formatted display date value.
      *
-     * @param string $data the input date data
+     * @param string $data the input date data.
      *
      * @return string
      */
@@ -332,12 +349,12 @@ class DateControl extends \kartik\base\InputWidget
     }
 
     /**
-     * Translate the date string
+     * Translate the date string.
      *
-     * @param string $data the input date data
-     * @param string $format the input date format
+     * @param string $data the input date data.
+     * @param string $format the input date format.
      *
-     * @return string the translated date
+     * @return string the translated date.
      */
     protected function translateDate($data, $format)
     {
@@ -351,12 +368,12 @@ class DateControl extends \kartik\base\InputWidget
     }
 
     /**
-     * Translate a date pattern based on type
+     * Translate a date pattern based on type.
      *
-     * @param string $string input date string
-     * @param string $type the type of date pattern as set in [[$_enSettings]]
+     * @param string $string input date string.
+     * @param string $type the type of date pattern as set in [[$_enSettings]].
      *
-     * @return string the translated string
+     * @return string the translated string.
      */
     protected function translate($string, $type)
     {
@@ -367,7 +384,7 @@ class DateControl extends \kartik\base\InputWidget
     }
 
     /**
-     * Sets the locale using the locales configuration settings
+     * Sets the locale using the locales configuration settings.
      */
     protected function setLocale()
     {
@@ -376,14 +393,17 @@ class DateControl extends \kartik\base\InputWidget
         }
         $file = static::getLocaleFile($this->language);
         if (file_exists($file)) {
+            /** @noinspection PhpIncludeInspection */
             $this->pluginOptions['dateSettings'] = require($file);
         }
     }
 
     /**
-     * Fetches the locale settings file
-     * @param string $lang the locale/language ISO code
-     * @return string the locale file name
+     * Fetches the locale settings file.
+     *
+     * @param string $lang the locale/language ISO code.
+     *
+     * @return string the locale file name.
      */
     protected static function getLocaleFile($lang)
     {
@@ -395,13 +415,15 @@ class DateControl extends \kartik\base\InputWidget
         }
         return $file;
     }
-    
+
     /**
-     * Parses locale data and returns an english format
-     * @param string $source the date source pattern
-     * @param string $format the date format
-     * @param string $settings the locale/language date settings
-     * @return the converted date source to english
+     * Parses locale data and returns an english format.
+     *
+     * @param string $source the date source pattern.
+     * @param string $format the date format.
+     * @param array|string $settings the locale/language date settings.
+     *
+     * @return string the converted date source to english.
      */
     protected static function parseLocale($source, $format, $settings = [])
     {
@@ -417,10 +439,11 @@ class DateControl extends \kartik\base\InputWidget
     }
     
     /**
-     * Checks if the format string contains the relevant date format 
-     * pattern based on the passed key.
+     * Checks if the format string contains the relevant date format pattern based on the passed key.
+     *
      * @param string $format the date format string
      * @param string $key the key to check
+     *
      * @return boolean
      */
     protected static function checkFormatKey($format, $key)
@@ -440,15 +463,17 @@ class DateControl extends \kartik\base\InputWidget
                 return false;
         }
     }
-    
+
     /**
-     * Parses and normalizes a date source and converts it to a DateTime object
-     * by parsing it based on specified format.
-     * @param string $source the date source pattern
-     * @param string $format the date format
-     * @param string $timezone the date timezone
-     * @param string $settings the locale/language date settings
-     * @return DateTime object
+     * Parses and normalizes a date source and converts it to a [[DateTime]] object by parsing it based on specified
+     * format.
+     *
+     * @param string $source the date source pattern.
+     * @param string $format the date format.
+     * @param string $timezone the date timezone.
+     * @param array|string $settings the locale/language date settings.
+     *
+     * @return DateTime
      */
     public static function getTimestamp($source, $format, $timezone = null, $settings = [])
     {
@@ -468,7 +493,7 @@ class DateControl extends \kartik\base\InputWidget
     }
     
     /**
-     * Registers assets
+     * Registers assets for the [[DateControl]] widget.
      */
     protected function registerAssets()
     {
