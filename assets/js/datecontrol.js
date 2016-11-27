@@ -90,6 +90,12 @@
         listen: function () {
             var self = this, $el = self.$element, $idSave = self.$idSave, src,
                 vDispFormat = self.dispFormat, vFormatter = self.dateFormatter;
+            $el.on('paste', function () {
+                setTimeout(function () {
+                    $($el[0]).attr('value', $($el[0]).prop('value'));
+                    $el.trigger('change');
+                }, 0);
+            });
             $el.on('change', function () {
                 self.validate();
             });
