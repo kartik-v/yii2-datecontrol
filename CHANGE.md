@@ -8,6 +8,7 @@ Change Log: `yii2-datecontrol`
 - Add github contribution and issue/PR logging templates.
 - Enhance PHP Documentation for all classes and methods in the extension.
 - Add branch alias for dev-master latest release.
+- (enh #94): Add paste support for DateControl.
 
 ## version 1.9.4
 

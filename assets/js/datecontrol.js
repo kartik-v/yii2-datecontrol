@@ -15,9 +15,10 @@
             return value === null || value === undefined || value.length === 0 || (trim && $.trim(value) === '');
         },
         DateControl = function (element, options) {
-            this.$element = $(element);
-            this.init(options);
-            this.listen();
+            var self = this;
+            self.$element = $(element);
+            self.init(options);
+            self.listen();
         };
 
     DateControl.prototype = {
@@ -28,6 +29,7 @@
             $.each(options, function (key, value) {
                 self[key] = value;
             });
+            /** @namespace options.idSave */
             self.$idSave = $("#" + options.idSave);
             self.dateFormatter = window.DateFormatter ? new window.DateFormatter(vSettings) : {};
             if (isEmpty(self.dateFormatter)) {
@@ -57,7 +59,7 @@
                     $idSave.val(vFormatter.formatDate(vDispDate, vSaveFormat)).trigger('change');
                     self.isChanged = false;
                 } else {
-                    vSettings = self.language.substring(0, 2) == 'en' ? [] : self.dateSettings;
+                    vSettings = self.language.substring(0, 2) === 'en' ? [] : self.dateSettings;
                     $.ajax({
                         url: vUrl,
                         type: "post",
@@ -88,10 +90,15 @@
             }
         },
         listen: function () {
-            var self = this, $el = self.$element, $idSave = self.$idSave, src,
-                vDispFormat = self.dispFormat, vFormatter = self.dateFormatter;
+            var self = this, $el = self.$element;
             $el.on('change', function () {
                 self.validate();
+            }).on('paste', function () {
+                setTimeout(function () {
+                    $el.val($el.val());
+                    self.validate();
+                    $el.trigger('datecontrol.afterpaste');
+                }, 100);
             });
         }
     };
