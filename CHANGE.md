@@ -1,6 +1,13 @@
 Change Log: `yii2-datecontrol`
 ==============================
 
+## version 1.9.5
+
+**Date:** 27-Nov-2016
+
+- Add github contribution and issue/PR logging templates.
+- Enhance PHP Documentation for all classes and methods in the extension.
+
 ## version 1.9.4
 
 **Date:** 30-Jul-2015
