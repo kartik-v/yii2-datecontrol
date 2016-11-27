@@ -1,64 +1,50 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-datecontrol
- * @version 1.9.0
+ * @package   yii2-datecontrol
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2016
+ * @version   1.9.5
  */
 
 namespace kartik\datecontrol\controllers;
 
-use DateTime;
 use DateTimeZone;
 use Yii;
-use yii\helpers\Json;
-use yii\helpers\ArrayHelper;
-use kartik\datecontrol\Module;
+use yii\web\Controller;
+use yii\web\Response;
+use kartik\datecontrol\DateControl;
 
-class ParseController extends \yii\web\Controller
+/**
+ * ParseController class manages the actions for date conversion via ajax from display to save.
+ *
+ * @package kartik\datecontrol\controllers
+ */
+class ParseController extends Controller
 {
-
     /**
-     * Convert display date for saving to model
+     * Convert display date for saving to model.
      *
-     * @returns JSON encoded HTML output
+     * @return string JSON encoded HTML output
      */
     public function actionConvert()
     {
-        $output = '';
-        $module = Yii::$app->controller->module;
+        Yii::$app->response->format = Response::FORMAT_JSON;
         $post = Yii::$app->request->post();
-        if (isset($post['displayDate'])) {
-            $type = empty($post['type']) ? Module::FORMAT_DATE : $post['type'];
-            $saveFormat = ArrayHelper::getValue($post, 'saveFormat');
-            $dispFormat = ArrayHelper::getValue($post, 'dispFormat');
-            $dispTimezone = ArrayHelper::getValue($post, 'dispTimezone');
-            $saveTimezone = ArrayHelper::getValue($post, 'saveTimezone');
-            $dispDate = $post['displayDate'];
-            /**
-             * Fix to prevent DateTime defaulting the time 
-             * part to current time, for FORMAT_DATE
-             */
-            if ($type == Module::FORMAT_DATE) {
-                $dispDate .= " 00:00:00";
-                $dispFormat .= " H:i:s";
-            }
-            if ($dispTimezone != null) {
-                $date = DateTime::createFromFormat($dispFormat, $dispDate, new DateTimeZone($dispTimezone));
-            } else {
-                $date = DateTime::createFromFormat($dispFormat, $dispDate);
-            }
-            if (empty($date) || !$date) {
-                $value = '';
-            } elseif ($saveTimezone != null) {
-                $value = $date->setTimezone(new DateTimeZone($saveTimezone))->format($saveFormat);
-            } else {
-                $value = $date->format($saveFormat);
-            }
-            echo Json::encode(['status' => 'success', 'output' => $value]);
-        } else {
-            echo Json::encode(['status' => 'error', 'output' => 'No display date found']);
+        if (!isset($post['displayDate'])) {
+            return ['status' => 'error', 'output' => 'No display date found'];
         }
+        $saveFormat = $dispFormat = $dispTimezone = $saveTimezone = $displayDate = '';
+        $settings = [];
+        extract($post);
+        $date = DateControl::getTimestamp($displayDate, $dispFormat, $dispTimezone, $settings);
+        if (empty($date) || !$date) {
+            $value = '';
+        } elseif ($saveTimezone != null) {
+            $value = $date->setTimezone(new DateTimeZone($saveTimezone))->format($saveFormat);
+        } else {
+            $value = $date->format($saveFormat);
+        }
+        return ['status' => 'success', 'output' => $value];
     }
-    
 }
