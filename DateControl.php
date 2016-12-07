@@ -11,13 +11,13 @@ namespace kartik\datecontrol;
 
 use DateTime;
 use DateTimeZone;
+use kartik\base\Config;
 use kartik\base\InputWidget;
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\helpers\ArrayHelper;
-use yii\base\InvalidConfigException;
-use kartik\base\Config;
 
 /**
  * DateControl widget enables you to the formatting of date/time separately for display (View) and saving to
@@ -51,12 +51,29 @@ class DateControl extends InputWidget
      * Date and time format type.
      */
     const FORMAT_DATETIME = 'datetime';
-
     /**
-     * @inheritdoc
+     * @var array the english date settings.
      */
-    protected $_pluginName = 'datecontrol';
-
+    private static $_enSettings = [
+        'days' => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        'daysShort' => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        'months' => [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December',
+        ],
+        'monthsShort' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        'meridiem' => ['AM', 'PM'],
+    ];
     /**
      * @var string data type to use for the displayed date control. One of the FORMAT constants.
      */
@@ -108,8 +125,18 @@ class DateControl extends InputWidget
     public $widgetClass;
 
     /**
-     * @var array the HTML attributes for the display input. If a widget is used based on [[autoWidget]] or
-     * [[widgetClass]], this will be considered as the widget options.
+     * @var array the configuration options for the widget which will be parsed only in one of the following cases:
+     *
+     * - when [[autoWidget]] is `true` and this corresponds to widget settings for `DatePicker`, `TimePicker`, or
+     *   `DateTimePicker` based on the [[$type]] setting, OR
+     * - when [[autoWidget]] is `false` and [[widgetClass]] is set and this allows to set the configuration options for
+     *   the particular widget class.
+     */
+    public $widgetOptions = [];
+
+    /**
+     * @var array the HTML attributes for the display input. This property is applicable and parsed only if
+     * [[autoWidget]] is `false` and [[widgetClass]] is empty or not set.
      */
     public $options = [];
 
@@ -127,40 +154,120 @@ class DateControl extends InputWidget
      * [[\kartik\grid\GridView]].
      */
     public $asyncRequest = true;
-
+    /**
+     * @inheritdoc
+     */
+    protected $_pluginName = 'datecontrol';
     /**
      * @var string display attribute name.
      */
     protected $_displayAttribName;
-
     /**
      * @var Module the `datecontrol` module instance.
      */
     protected $_module;
-
     /**
-     * @var array the parsed widget settings from the module.
+     * @var array the parsed widget class settings for each type (defaults from the module setting if not set).
      */
     protected $_widgetSettings = [];
-
     /**
      * @var boolean whether translation is needed
      */
     private $_doTranslate = false;
 
     /**
-     * @var array the english date settings.
+     * Parses and normalizes a date source and converts it to a [[DateTime]] object by parsing it based on specified
+     * format.
+     *
+     * @param string $source the date source pattern.
+     * @param string $format the date format.
+     * @param string $timezone the date timezone.
+     * @param array|string $settings the locale/language date settings.
+     *
+     * @return DateTime
      */
-    private static $_enSettings = [
-        'days' => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        'daysShort' => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        'months' => [
-            'January', 'February', 'March', 'April', 'May', 'June', 'July',
-            'August', 'September', 'October', 'November', 'December'
-        ],
-        'monthsShort' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        'meridiem' => ['AM', 'PM']
-    ];
+    public static function getTimestamp($source, $format, $timezone = null, $settings = [])
+    {
+        if (empty($source)) {
+            return null;
+        }
+        $source = static::parseLocale($source, $format, $settings);
+        if (substr($format, 0, 1) !== '!') {
+            $format = '!' . $format;
+        }
+        if ($timezone != null) {
+            $timestamp = DateTime::createFromFormat($format, $source, new DateTimeZone($timezone));
+        } else {
+            $timestamp = DateTime::createFromFormat($format, $source);
+        }
+        return $timestamp;
+    }
+
+    /**
+     * Fetches the locale settings file.
+     *
+     * @param string $lang the locale/language ISO code.
+     *
+     * @return string the locale file name.
+     */
+    protected static function getLocaleFile($lang)
+    {
+        $s = DIRECTORY_SEPARATOR;
+        $file = __DIR__ . "{$s}locales{$s}{$lang}{$s}dateSettings.php";
+        if (!file_exists($file)) {
+            $langShort = Config::getLang($lang);
+            $file = __DIR__ . "{$s}locales{$s}{$langShort}{$s}dateSettings.php";
+        }
+        return $file;
+    }
+
+    /**
+     * Parses locale data and returns an english format.
+     *
+     * @param string $source the date source pattern.
+     * @param string $format the date format.
+     * @param array|string $settings the locale/language date settings.
+     *
+     * @return string the converted date source to english.
+     */
+    protected static function parseLocale($source, $format, $settings = [])
+    {
+        if (empty($settings)) {
+            return $source;
+        }
+        foreach (self::$_enSettings as $key => $value) {
+            if (!empty($settings[$key]) && static::checkFormatKey($format, $key)) {
+                $source = str_ireplace($settings[$key], $value, $source);
+            }
+        }
+        return $source;
+    }
+
+    /**
+     * Checks if the format string contains the relevant date format pattern based on the passed key.
+     *
+     * @param string $format the date format string
+     * @param string $key the key to check
+     *
+     * @return boolean
+     */
+    protected static function checkFormatKey($format, $key)
+    {
+        switch ($key) {
+            case 'months':
+                return strpos($format, 'F') !== false;
+            case 'monthsShort':
+                return strpos($format, 'M') !== false;
+            case 'days':
+                return strpos($format, 'l') !== false;
+            case 'daysShort':
+                return strpos($format, 'D') !== false;
+            case 'meridiem':
+                return stripos($format, 'A') !== false;
+            default:
+                return false;
+        }
+    }
 
     /**
      * @inheritdoc
@@ -172,19 +279,34 @@ class DateControl extends InputWidget
             $this->ajaxConversion = $this->_module->ajaxConversion;
         }
         if (!$this->ajaxConversion && ($this->displayTimezone != null || $this->saveTimezone != null)) {
-            throw new InvalidConfigException("You must set 'ajaxConversion' to 'true' when using time-zones for display or save.");
+            throw new InvalidConfigException(
+                "You must set 'ajaxConversion' to 'true' when using time-zones for display or save."
+            );
         }
         parent::init();
         $this->initLanguage();
         $this->setDataVar($this->_pluginName);
         $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
         $this->saveOptions['id'] = $this->options['id'];
-        $this->options['id'] = $this->options['id'] . '-disp';
+        $this->options['id'] .= '-disp';
+        if ($this->isWidget()) {
+            $this->widgetOptions['options']['id'] = $this->options['id'];
+        }
         $this->_doTranslate = isset($this->language) && $this->language != 'en';
         if ($this->_doTranslate && $this->autoWidget) {
             $this->_widgetSettings[$this->type]['options']['language'] = $this->language;
         }
         $this->setLocale();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function run()
+    {
+        $this->registerAssets();
+        echo $this->getDisplayInput() . $this->getSaveInput();
+        parent::run();
     }
 
     /**
@@ -227,8 +349,10 @@ class DateControl extends InputWidget
                 self::FORMAT_DATETIME => ['class' => '\kartik\datetime\DateTimePicker'],
                 self::FORMAT_TIME => ['class' => '\kartik\time\TimePicker'],
             ];
-            Config::validateInputWidget($this->_widgetSettings[$this->type]['class'],
-                "for DateControl '{$this->type}' format");
+            Config::validateInputWidget(
+                $this->_widgetSettings[$this->type]['class'],
+                "for DateControl '{$this->type}' format"
+            );
             foreach ($this->_widgetSettings as $type => $setting) {
                 $this->_widgetSettings[$type]['options'] = $this->_module->autoWidgetSettings[$type];
                 $this->_widgetSettings[$type]['disabled'] = $this->disabled;
@@ -238,16 +362,6 @@ class DateControl extends InputWidget
         if (empty($this->widgetClass) && !empty($this->_widgetSettings[$this->type]['class'])) {
             $this->widgetClass = $this->_widgetSettings[$this->type]['class'];
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function run()
-    {
-        $this->registerAssets();
-        echo $this->getDisplayInput() . $this->getSaveInput();
-        parent::run();
     }
 
     /**
@@ -275,26 +389,28 @@ class DateControl extends InputWidget
             return Html::textInput($this->_displayAttribName, $value, $this->options);
         }
         if (!empty($this->displayFormat) && $this->autoWidget) {
-            $this->options = ArrayHelper::merge(Module::defaultWidgetOptions($this->type, $this->displayFormat),
-                $this->options);
+            $defaultOptions = Module::defaultWidgetOptions($this->type, $this->displayFormat);
+            $this->widgetOptions = ArrayHelper::merge($defaultOptions, $this->widgetOptions);
         }
         if (!empty($this->_widgetSettings[$this->type]['options'])) {
-            $this->options = ArrayHelper::merge($this->_widgetSettings[$this->type]['options'], $this->options);
+            $this->widgetOptions = ArrayHelper::merge(
+                $this->_widgetSettings[$this->type]['options'], $this->widgetOptions
+            );
         }
-        unset($this->options['model'], $this->options['attribute']);
-        $this->options['name'] = $this->_displayAttribName;
-        $this->options['value'] = $value;
+        unset($this->widgetOptions['model'], $this->widgetOptions['attribute']);
+        $this->widgetOptions['name'] = $this->_displayAttribName;
+        $this->widgetOptions['value'] = $value;
         /**
          * @var InputWidget $class
          */
         $class = $this->widgetClass;
         if (!property_exists($class, 'disabled')) {
-            unset($this->options['disabled']);
+            unset($this->widgetOptions['disabled']);
         }
         if (!property_exists($class, 'readonly')) {
-            unset($this->options['readonly']);
+            unset($this->widgetOptions['readonly']);
         }
-        return $class::widget($this->options);
+        return $class::widget($this->widgetOptions);
     }
 
     /**
@@ -399,100 +515,6 @@ class DateControl extends InputWidget
     }
 
     /**
-     * Fetches the locale settings file.
-     *
-     * @param string $lang the locale/language ISO code.
-     *
-     * @return string the locale file name.
-     */
-    protected static function getLocaleFile($lang)
-    {
-        $s = DIRECTORY_SEPARATOR;
-        $file = __DIR__ . "{$s}locales{$s}{$lang}{$s}dateSettings.php";
-        if (!file_exists($file)) {
-            $langShort = Config::getLang($lang);
-            $file = __DIR__ . "{$s}locales{$s}{$langShort}{$s}dateSettings.php";
-        }
-        return $file;
-    }
-
-    /**
-     * Parses locale data and returns an english format.
-     *
-     * @param string $source the date source pattern.
-     * @param string $format the date format.
-     * @param array|string $settings the locale/language date settings.
-     *
-     * @return string the converted date source to english.
-     */
-    protected static function parseLocale($source, $format, $settings = [])
-    {
-        if (empty($settings)) {
-            return $source;
-        }
-        foreach (self::$_enSettings as $key => $value) {
-            if (!empty($settings[$key]) && static::checkFormatKey($format, $key)) {
-                $source = str_ireplace($settings[$key], $value, $source);
-            }
-        }
-        return $source;
-    }
-    
-    /**
-     * Checks if the format string contains the relevant date format pattern based on the passed key.
-     *
-     * @param string $format the date format string
-     * @param string $key the key to check
-     *
-     * @return boolean
-     */
-    protected static function checkFormatKey($format, $key)
-    {
-        switch ($key) {
-            case 'months':
-                return strpos($format, 'F') !== false;
-            case 'monthsShort':
-                return strpos($format, 'M') !== false;
-            case 'days':
-                return strpos($format, 'l') !== false;
-            case 'daysShort':
-                return strpos($format, 'D') !== false;
-            case 'meridiem':
-                return stripos($format, 'A') !== false;
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Parses and normalizes a date source and converts it to a [[DateTime]] object by parsing it based on specified
-     * format.
-     *
-     * @param string $source the date source pattern.
-     * @param string $format the date format.
-     * @param string $timezone the date timezone.
-     * @param array|string $settings the locale/language date settings.
-     *
-     * @return DateTime
-     */
-    public static function getTimestamp($source, $format, $timezone = null, $settings = [])
-    {
-        if (empty($source)) {
-            return null;
-        }
-        $source = static::parseLocale($source, $format, $settings);
-        if (substr($format, 0, 1) !== '!') {
-            $format = '!' . $format;
-        }
-        if ($timezone != null) {
-            $timestamp = DateTime::createFromFormat($format, $source, new DateTimeZone($timezone));
-        } else {
-            $timestamp = DateTime::createFromFormat($format, $source);
-        }
-        return $timestamp;
-    }
-    
-    /**
      * Registers assets for the [[DateControl]] widget.
      */
     protected function registerAssets()
@@ -501,20 +523,18 @@ class DateControl extends InputWidget
         DateFormatterAsset::register($view);
         DateControlAsset::register($view);
         $pluginOptions = empty($this->pluginOptions) ? [] : $this->pluginOptions;
-        $this->pluginOptions = ArrayHelper::merge([
-            'idSave' => $this->saveOptions['id'],
-            'url' => $this->ajaxConversion ? Url::to([$this->_module->convertAction]) : '',
-            'type' => $this->type,
-            'saveFormat' => $this->saveFormat,
-            'dispFormat' => $this->displayFormat,
-            'saveTimezone' => $this->saveTimezone,
-            'dispTimezone' => $this->displayTimezone,
-            'asyncRequest' => $this->asyncRequest
-        ], $pluginOptions);
+        $this->pluginOptions = ArrayHelper::merge(
+            [
+                'idSave' => $this->saveOptions['id'],
+                'url' => $this->ajaxConversion ? Url::to([$this->_module->convertAction]) : '',
+                'type' => $this->type,
+                'saveFormat' => $this->saveFormat,
+                'dispFormat' => $this->displayFormat,
+                'saveTimezone' => $this->saveTimezone,
+                'dispTimezone' => $this->displayTimezone,
+                'asyncRequest' => $this->asyncRequest,
+            ], $pluginOptions
+        );
         $this->registerPlugin($this->_pluginName);
-        if ($this->isWidget() && !empty($this->options[$this->_dataVar])) {
-            $this->options['options'][$this->_dataVar] = $this->options[$this->_dataVar];
-            unset($this->options[$this->_dataVar]);
-        }
     }
 }

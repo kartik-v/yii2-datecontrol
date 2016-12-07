@@ -3,12 +3,13 @@ Change Log: `yii2-datecontrol`
 
 ## version 1.9.5
 
-**Date:** 27-Nov-2016
+**Date:** 08-Dec-2016
 
 - Add github contribution and issue/PR logging templates.
 - Enhance PHP Documentation for all classes and methods in the extension.
 - Add branch alias for dev-master latest release.
 - (enh #94): Add paste support for DateControl.
+- (bug #103): **BC BREAKING CHANGE**: A new property `widgetOptions` is available. This property will replace the `options` property for the scenario when `autoWidget` or `widgetClass` is set.
 
 ## version 1.9.4
 
