@@ -504,7 +504,7 @@ class DateControl extends InputWidget
         $this->pluginOptions = ArrayHelper::merge([
             'idSave' => $this->saveOptions['id'],
             'url' => $this->ajaxConversion ? Url::to([$this->_module->convertAction]) : '',
-            'type' => $this->type,
+            'reqType' => $this->type,
             'saveFormat' => $this->saveFormat,
             'dispFormat' => $this->displayFormat,
             'saveTimezone' => $this->saveTimezone,
