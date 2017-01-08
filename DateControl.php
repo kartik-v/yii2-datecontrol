@@ -539,5 +539,9 @@ class DateControl extends InputWidget
             ], $pluginOptions
         );
         $this->registerPlugin($this->_pluginName);
+        $pluginData = 'data-krajee-' . $this->_pluginName;
+        if (!empty($this->options[$pluginData])) {
+            $this->widgetOptions['options'][$pluginData] = $this->options[$pluginData];
+        }
     }
 }

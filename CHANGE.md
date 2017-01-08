@@ -13,6 +13,7 @@ Change Log: `yii2-datecontrol`
    - `changeajaxerror.datecontrol`: will be triggered when any exception or error is thrown during the ajax conversion.
    - `afterpaste.datecontrol`: will be triggered when a data is pasted in the date input on the client.   
 - (enh #96, #102): Ignore timezone conversion for `DateControl::FORMAT_DATE`.
+- (bug #105): Set date control plugin data correctly within widget options.
 
 ## version 1.9.5
 
