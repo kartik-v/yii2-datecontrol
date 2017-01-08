@@ -1,6 +1,6 @@
 /*!
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2016
- * @version 1.9.5
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2017
+ * @version 1.9.6
  *
  * Date control validation plugin
  * 
@@ -11,7 +11,8 @@
  */
 (function ($) {
     "use strict";
-    var isEmpty = function (value, trim) {
+    var NAMESPACE = '.datecontrol',
+        isEmpty = function (value, trim) {
             return value === null || value === undefined || value.length === 0 || (trim && $.trim(value) === '');
         },
         DateControl = function (element, options) {
@@ -37,6 +38,14 @@
             }
             self.isChanged = false;
         },
+        raise: function (event, params) {
+            var self = this, e = $.Event(event + NAMESPACE), $el = self.$element;
+            if (params !== undefined) {
+                $el.trigger(e, params);
+            } else {
+                $el.trigger(e);
+            }
+        },
         validate: function () {
             var self = this, $el = self.$element, $idSave = self.$idSave, vUrl = self.url,
                 vType = self.type, vDispFormat = self.dispFormat, vSaveFormat = self.saveFormat,
@@ -48,6 +57,7 @@
             self.isChanged = true;
             if (isEmpty($el.val())) {
                 $idSave.val('').trigger('change');
+                self.raise('changesuccess', [$el.val(), $idSave.val()]);
                 self.isChanged = false;
             } else {
                 if (isEmpty(vUrl)) {
@@ -57,6 +67,7 @@
                         $el.val(vFormatter.formatDate(vDispDate, vDispFormat));
                     }
                     $idSave.val(vFormatter.formatDate(vDispDate, vSaveFormat)).trigger('change');
+                    self.raise('changesuccess', [$el.val(), $idSave.val()]);
                     self.isChanged = false;
                 } else {
                     vSettings = self.language.substring(0, 2) === 'en' ? [] : self.dateSettings;
@@ -74,16 +85,24 @@
                             saveTimezone: vSaveTimezone,
                             settings: vSettings
                         },
-                        success: function (data) {
+                        beforeSend: function (jqXHR) {
+                            self.raise('beforechange', [$el.val(), $idSave.val(), jqXHR]);
+                        },
+                        success: function (data, textStatus, jqXHR) {
+                            var ev = 'changeerror';
                             if (data.status === "success") {
                                 $idSave.val(data.output).trigger('change');
+                                ev = 'changesuccess';
                             }
+                            self.raise(ev, [$el.val(), $idSave.val(), data, textStatus, jqXHR]);
                         },
                         complete: function () {
                             self.isChanged = false;
+                            self.raise('changecomplete', [$el.val(), $idSave.val()]);
                         },
-                        error: function () {
+                        error: function (jqXHR, textStatus, errorThrown) {
                             self.isChanged = false;
+                            self.raise('changeajaxerror', [$el.val(), $idSave.val(), jqXHR, textStatus, errorThrown]);
                         }
                     });
                 }
@@ -97,7 +116,7 @@
                 setTimeout(function () {
                     $el.val($el.val());
                     self.validate();
-                    $el.trigger('datecontrol.afterpaste');
+                    self.raise('afterpaste');
                 }, 100);
             });
         }

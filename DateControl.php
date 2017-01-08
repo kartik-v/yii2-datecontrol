@@ -3,8 +3,8 @@
 /**
  * @package   yii2-datecontrol
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2016
- * @version   1.9.5
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2017
+ * @version   1.9.6
  */
 
 namespace kartik\datecontrol;
@@ -136,7 +136,8 @@ class DateControl extends InputWidget
 
     /**
      * @var array the HTML attributes for the display input. This property is applicable and parsed only if
-     * [[autoWidget]] is `false` and [[widgetClass]] is empty or not set.
+     * [[autoWidget]] is `false` and [[widgetClass]] is empty or not set. For a widget, the [[widgetOptions]] must be
+     * used to configure the widget settings.
      */
     public $options = [];
 
@@ -343,6 +344,10 @@ class DateControl extends InputWidget
         if (empty($this->saveTimezone)) {
             $this->saveTimezone = $this->_module->getSaveTimezone();
         }
+        // skip timezone validations when using date only inputs
+        if ($this->type === self::FORMAT_DATE) {
+            $this->displayTimezone = $this->saveTimezone = null;
+        }
         if ($this->autoWidget) {
             $this->_widgetSettings = [
                 self::FORMAT_DATE => ['class' => '\kartik\date\DatePicker'],
@@ -400,6 +405,8 @@ class DateControl extends InputWidget
         unset($this->widgetOptions['model'], $this->widgetOptions['attribute']);
         $this->widgetOptions['name'] = $this->_displayAttribName;
         $this->widgetOptions['value'] = $value;
+        $this->widgetOptions['disabled'] = $this->disabled;
+        $this->widgetOptions['readonly'] = $this->readonly;
         /**
          * @var InputWidget $class
          */
@@ -443,10 +450,6 @@ class DateControl extends InputWidget
      */
     protected function getDisplayValue($data)
     {
-        /**
-         * Fix to prevent DateTime defaulting the time
-         * part to current time, for FORMAT_DATE
-         */
         $saveDate = $data;
         $saveFormat = $this->saveFormat;
         $settings = $this->_doTranslate ? ArrayHelper::getValue($this->pluginOptions, 'dateSettings', []) : [];

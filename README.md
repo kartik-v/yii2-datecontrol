@@ -14,7 +14,7 @@ be parsed as a ICU date pattern. In order to pass a PHP Date format - prepend yo
 
 ## Why Date Control?
 
-> Version 1.9.5 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
+> Version 1.9.6 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
 > NOTE: Version 1.9.5 has BC breaking changes. A new property `widgetOptions` is available. This property will replace the `options` property for the scenario when `autoWidget` or `widgetClass` is set.
 
 When working with the great Yii Framework, one of the most common observations I had was the need to have a proper control on the date settings. The date settings for each 

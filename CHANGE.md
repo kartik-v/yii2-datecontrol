@@ -1,6 +1,19 @@
 Change Log: `yii2-datecontrol`
 ==============================
 
+## version 1.9.6 (_under development_)
+
+**Date:** 08-Jan-2017
+
+- (enh #92): Implement following DateControl plugin events that can be listened via jQuery/javascript:
+   - `beforechange.datecontrol`: will be triggered before an ajax request is sent when changing the date input on client.
+   - `changesuccess.datecontrol`: will be triggered after successful change of a date on the client(applicable for both ajax or non ajax conversions). 
+   - `changeerror.datecontrol`: will be triggered when the ajax conversion service returns an error status.
+   - `changecomplete.datecontrol`: will be triggered after completion of an ajax conversion service.
+   - `changeajaxerror.datecontrol`: will be triggered when any exception or error is thrown during the ajax conversion.
+   - `afterpaste.datecontrol`: will be triggered when a data is pasted in the date input on the client.   
+- (enh #96, #102): Ignore timezone conversion for `DateControl::FORMAT_DATE`.
+
 ## version 1.9.5
 
 **Date:** 08-Dec-2016
