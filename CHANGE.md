@@ -14,6 +14,7 @@ Change Log: `yii2-datecontrol`
    - `afterpaste.datecontrol`: will be triggered when a data is pasted in the date input on the client.   
 - (enh #96, #102): Ignore timezone conversion for `DateControl::FORMAT_DATE`.
 - (bug #105): Set date control plugin data correctly within widget options.
+- (bug #106): More correct validation for guessing date without ajax conversion.
 
 ## version 1.9.5
 

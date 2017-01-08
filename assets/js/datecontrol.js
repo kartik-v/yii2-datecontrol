@@ -62,7 +62,7 @@
             } else {
                 if (isEmpty(vUrl)) {
                     var vDispDate = vFormatter.parseDate($el.val(), vDispFormat);
-                    if (vDispDate === false) {
+                    if (vDispDate === false || vDispDate === null || String(vDispDate).length === 0) {
                         vDispDate = vFormatter.guessDate($el.val(), vDispFormat);
                         $el.val(vFormatter.formatDate(vDispDate, vDispFormat));
                     }
