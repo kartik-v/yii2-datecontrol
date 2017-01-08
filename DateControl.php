@@ -158,11 +158,7 @@ class DateControl extends InputWidget
     /**
      * @inheritdoc
      */
-    protected $_pluginName = 'datecontrol';
-    /**
-     * @var string display attribute name.
-     */
-    protected $_displayAttribName;
+    public $pluginName = 'datecontrol';
     /**
      * @var Module the `datecontrol` module instance.
      */
@@ -286,8 +282,7 @@ class DateControl extends InputWidget
         }
         parent::init();
         $this->initLanguage();
-        $this->setDataVar($this->_pluginName);
-        $this->_displayAttribName = (($this->hasModel()) ? $this->attribute : $this->name) . '-' . $this->options['id'];
+        $this->setDataVar($this->pluginName);
         $this->saveOptions['id'] = $this->options['id'];
         $this->options['id'] .= '-disp';
         if ($this->isWidget()) {
@@ -308,6 +303,32 @@ class DateControl extends InputWidget
         $this->registerAssets();
         echo $this->getDisplayInput() . $this->getSaveInput();
         parent::run();
+    }
+
+    /**
+     * Gets the formatted display date value.
+     *
+     * @param string $data the input date data.
+     *
+     * @return string
+     */
+    public function getDisplayValue($data)
+    {
+        $saveDate = $data;
+        $saveFormat = $this->saveFormat;
+        $settings = $this->_doTranslate ? ArrayHelper::getValue($this->pluginOptions, 'dateSettings', []) : [];
+        $date = static::getTimestamp($saveDate, $saveFormat, $this->saveTimezone, $settings);
+        if ($date && $date instanceof DateTime) {
+            if ($this->displayTimezone != null) {
+                $date->setTimezone(new DateTimeZone($this->displayTimezone));
+            }
+            $value = $date->format($this->displayFormat);
+            if ($this->_doTranslate) {
+                $value = $this->translateDate($value, $this->displayFormat);
+            }
+            return $value;
+        }
+        return null;
     }
 
     /**
@@ -386,38 +407,41 @@ class DateControl extends InputWidget
      */
     protected function getDisplayInput()
     {
+        $name = ($this->hasModel() ? $this->attribute : $this->name) . '-' . $this->options['id'];
         $value = empty($this->value) ? '' : $this->getDisplayValue($this->value);
         if (!$this->isWidget()) {
             if (empty($this->options['class'])) {
                 $this->options['class'] = 'form-control';
             }
-            return Html::textInput($this->_displayAttribName, $value, $this->options);
+            return Html::textInput($name, $value, $this->options);
         }
+        $opts = $this->widgetOptions;
         if (!empty($this->displayFormat) && $this->autoWidget) {
             $defaultOptions = Module::defaultWidgetOptions($this->type, $this->displayFormat);
-            $this->widgetOptions = ArrayHelper::merge($defaultOptions, $this->widgetOptions);
+            $this->widgetOptions = ArrayHelper::merge($defaultOptions, $opts);
         }
         if (!empty($this->_widgetSettings[$this->type]['options'])) {
-            $this->widgetOptions = ArrayHelper::merge(
-                $this->_widgetSettings[$this->type]['options'], $this->widgetOptions
+            $opts = ArrayHelper::merge(
+                $this->_widgetSettings[$this->type]['options'], $opts
             );
         }
-        unset($this->widgetOptions['model'], $this->widgetOptions['attribute']);
-        $this->widgetOptions['name'] = $this->_displayAttribName;
-        $this->widgetOptions['value'] = $value;
-        $this->widgetOptions['disabled'] = $this->disabled;
-        $this->widgetOptions['readonly'] = $this->readonly;
+        unset($opts['model'], $opts['attribute']);
+        $opts['name'] = $name;
+        $opts['value'] = $value;
+        $opts['disabled'] = $this->disabled;
+        $opts['readonly'] = $this->readonly;
         /**
          * @var InputWidget $class
          */
         $class = $this->widgetClass;
         if (!property_exists($class, 'disabled')) {
-            unset($this->widgetOptions['disabled']);
+            unset($opts['disabled']);
         }
         if (!property_exists($class, 'readonly')) {
-            unset($this->widgetOptions['readonly']);
+            unset($opts['readonly']);
         }
-        return $class::widget($this->widgetOptions);
+        $this->widgetOptions = $opts;
+        return $class::widget($opts);
     }
 
     /**
@@ -439,32 +463,6 @@ class DateControl extends InputWidget
         return $this->hasModel() ?
             Html::activeHiddenInput($this->model, $this->attribute, $this->saveOptions) :
             Html::hiddenInput($this->name, $this->value, $this->saveOptions);
-    }
-
-    /**
-     * Gets the formatted display date value.
-     *
-     * @param string $data the input date data.
-     *
-     * @return string
-     */
-    protected function getDisplayValue($data)
-    {
-        $saveDate = $data;
-        $saveFormat = $this->saveFormat;
-        $settings = $this->_doTranslate ? ArrayHelper::getValue($this->pluginOptions, 'dateSettings', []) : [];
-        $date = static::getTimestamp($saveDate, $saveFormat, $this->saveTimezone, $settings);
-        if ($date && $date instanceof DateTime) {
-            if ($this->displayTimezone != null) {
-                $date->setTimezone(new DateTimeZone($this->displayTimezone));
-            }
-            $value = $date->format($this->displayFormat);
-            if ($this->_doTranslate) {
-                $value = $this->translateDate($value, $this->displayFormat);
-            }
-            return $value;
-        }
-        return null;
     }
 
     /**
@@ -538,8 +536,8 @@ class DateControl extends InputWidget
                 'asyncRequest' => $this->asyncRequest,
             ], $pluginOptions
         );
-        $this->registerPlugin($this->_pluginName);
-        $pluginData = 'data-krajee-' . $this->_pluginName;
+        $this->registerPlugin($this->pluginName);
+        $pluginData = 'data-krajee-' . $this->pluginName;
         if (!empty($this->options[$pluginData])) {
             $this->widgetOptions['options'][$pluginData] = $this->options[$pluginData];
         }
