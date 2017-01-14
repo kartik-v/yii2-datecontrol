@@ -1,7 +1,7 @@
 Change Log: `yii2-datecontrol`
 ==============================
 
-## version 1.9.6 (_under development_)
+## version 1.9.6
 
 **Date:** 14-Jan-2017
 
@@ -16,6 +16,7 @@ Change Log: `yii2-datecontrol`
 - (bug #105): Set date control plugin data correctly within widget options.
 - (bug #106): More correct validation for guessing date without ajax conversion.
 - (bug #108): Initialize auto widget options correctly.
+- Better configuration for `Module::convertAction`.
 
 ## version 1.9.5
 

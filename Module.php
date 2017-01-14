@@ -114,9 +114,9 @@ class Module extends YiiModule
     public $widgetSettings = [];
 
     /**
-     * @var string the route/action to convert the date as per the `saveFormat` set in DateControl widget.
+     * @var string|array the route/action to convert the date as per the `saveFormat` set in DateControl widget.
      */
-    public $convertAction = '/datecontrol/parse/convert';
+    public $convertAction = ['/datecontrol/parse/convert'];
 
     /**
      * @var boolean, whether to use ajax based date conversion from display to save formats. If
@@ -166,7 +166,7 @@ class Module extends YiiModule
             self::FORMAT_TIME => [
                 'pluginOptions' => [
                     'showSeconds' => (strpos($format, 's') > 0) ? true : false,
-                    'showMeridian' => (strpos($format, 'a') > 0 || strpos($format, 'A') > 0) ? true : false
+                    'showMeridian' => strpos($format, 'a') > 0 || strpos($format, 'A') > 0 ? true : false
                 ]
             ],
         ];
