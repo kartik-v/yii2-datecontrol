@@ -418,7 +418,7 @@ class DateControl extends InputWidget
         $opts = $this->widgetOptions;
         if (!empty($this->displayFormat) && $this->autoWidget) {
             $defaultOptions = Module::defaultWidgetOptions($this->type, $this->displayFormat);
-            $this->widgetOptions = ArrayHelper::merge($defaultOptions, $opts);
+            $opts = ArrayHelper::merge($defaultOptions, $opts);
         }
         if (!empty($this->_widgetSettings[$this->type]['options'])) {
             $opts = ArrayHelper::merge(
@@ -428,17 +428,15 @@ class DateControl extends InputWidget
         unset($opts['model'], $opts['attribute']);
         $opts['name'] = $name;
         $opts['value'] = $value;
-        $opts['disabled'] = $this->disabled;
-        $opts['readonly'] = $this->readonly;
         /**
          * @var InputWidget $class
          */
         $class = $this->widgetClass;
-        if (!property_exists($class, 'disabled')) {
-            unset($opts['disabled']);
+        if (property_exists($class, 'disabled')) {
+            $opts['disabled'] = $this->disabled;
         }
-        if (!property_exists($class, 'readonly')) {
-            unset($opts['readonly']);
+        if (property_exists($class, 'readonly')) {
+            $opts['readonly'] = $this->readonly;
         }
         $this->widgetOptions = $opts;
         return $class::widget($opts);

@@ -3,7 +3,7 @@ Change Log: `yii2-datecontrol`
 
 ## version 1.9.6 (_under development_)
 
-**Date:** 08-Jan-2017
+**Date:** 14-Jan-2017
 
 - (enh #92): Implement following DateControl plugin events that can be listened via jQuery/javascript:
    - `beforechange.datecontrol`: will be triggered before an ajax request is sent when changing the date input on client.
@@ -15,6 +15,7 @@ Change Log: `yii2-datecontrol`
 - (enh #96, #102): Ignore timezone conversion for `DateControl::FORMAT_DATE`.
 - (bug #105): Set date control plugin data correctly within widget options.
 - (bug #106): More correct validation for guessing date without ajax conversion.
+- (bug #108): Initialize auto widget options correctly.
 
 ## version 1.9.5
 
