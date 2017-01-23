@@ -359,10 +359,10 @@ class DateControl extends InputWidget
         } else {
             $this->saveFormat = Module::parseFormat($this->saveFormat, $this->type);
         }
-        if (empty($this->displayTimezone)) {
+        if (!isset($this->displayTimezone)) {
             $this->displayTimezone = $this->_module->getDisplayTimezone();
         }
-        if (empty($this->saveTimezone)) {
+        if (!isset($this->saveTimezone)) {
             $this->saveTimezone = $this->_module->getSaveTimezone();
         }
         // skip timezone validations when using date only inputs
