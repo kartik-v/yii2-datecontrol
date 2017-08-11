@@ -185,7 +185,7 @@ class DateControl extends InputWidget
      */
     public static function getTimestamp($source, $format, $timezone = null, $settings = [])
     {
-        if (empty($source)) {
+        if ($source === null) {
             return null;
         }
         $source = static::parseLocale($source, $format, $settings);
@@ -408,7 +408,7 @@ class DateControl extends InputWidget
     protected function getDisplayInput()
     {
         $name = ($this->hasModel() ? $this->attribute : $this->name) . '-' . $this->options['id'];
-        $value = empty($this->value) ? '' : $this->getDisplayValue($this->value);
+        $value = $this->value === null ? '' : $this->getDisplayValue($this->value);
         if (!$this->isWidget()) {
             if (empty($this->options['class'])) {
                 $this->options['class'] = 'form-control';
