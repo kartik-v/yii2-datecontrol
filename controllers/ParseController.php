@@ -3,8 +3,8 @@
 /**
  * @package   yii2-datecontrol
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2017
- * @version   1.9.6
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
+ * @version   1.9.7
  */
 
 namespace kartik\datecontrol\controllers;
@@ -17,8 +17,6 @@ use kartik\datecontrol\DateControl;
 
 /**
  * ParseController class manages the actions for date conversion via ajax from display to save.
- *
- * @package kartik\datecontrol\controllers
  */
 class ParseController extends Controller
 {
@@ -30,13 +28,17 @@ class ParseController extends Controller
     public function actionConvert()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $post = Yii::$app->request->post();
+        $req = Yii::$app->request;
+        $post = $req->post();
         if (!isset($post['displayDate'])) {
             return ['status' => 'error', 'output' => 'No display date found'];
         }
-        $saveFormat = $dispFormat = $dispTimezone = $saveTimezone = $displayDate = '';
+        $saveFormat = $req->post('saveFormat', '');
+        $saveTimezone = $req->post('saveTimezone', '');
+        $dispFormat = $req->post('dispFormat', '');
+        $dispTimezone = $req->post('dispTimezone', '');
+        $displayDate = $req->post('displayDate', '');
         $settings = [];
-        extract($post);
         $date = DateControl::getTimestamp($displayDate, $dispFormat, $dispTimezone, $settings);
         if (empty($date) || !$date) {
             $value = '';

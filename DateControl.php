@@ -3,8 +3,8 @@
 /**
  * @package   yii2-datecontrol
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2017
- * @version   1.9.6
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
+ * @version   1.9.7
  */
 
 namespace kartik\datecontrol;
@@ -185,7 +185,7 @@ class DateControl extends InputWidget
      */
     public static function getTimestamp($source, $format, $timezone = null, $settings = [])
     {
-        if (empty($source)) {
+        if (!isset($source) || $source === '') {
             return null;
         }
         $source = static::parseLocale($source, $format, $settings);
@@ -408,7 +408,7 @@ class DateControl extends InputWidget
     protected function getDisplayInput()
     {
         $name = ($this->hasModel() ? $this->attribute : $this->name) . '-' . $this->options['id'];
-        $value = empty($this->value) ? '' : $this->getDisplayValue($this->value);
+        $value = !isset($this->value) || $this->value === '' ? '' : $this->getDisplayValue($this->value);
         if (!$this->isWidget()) {
             if (empty($this->options['class'])) {
                 $this->options['class'] = 'form-control';
