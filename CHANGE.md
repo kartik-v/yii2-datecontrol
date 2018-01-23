@@ -5,6 +5,7 @@ Change Log: `yii2-datecontrol`
 
 **Date:** _work in progress_
 
+- (bug #121): Add delay before run validate(), while "timepicker" make changes.
 - (enh #120): Better post params validation.
 - (enh #113): Correct empty value validation.
 
