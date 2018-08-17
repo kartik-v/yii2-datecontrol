@@ -38,7 +38,7 @@ class ParseController extends Controller
         $dispFormat = $req->post('dispFormat', '');
         $dispTimezone = $req->post('dispTimezone', '');
         $displayDate = $req->post('displayDate', '');
-        $settings = [];
+        $settings = $req->post('settings', []);
         $date = DateControl::getTimestamp($displayDate, $dispFormat, $dispTimezone, $settings);
         if (empty($date) || !$date) {
             $value = '';
