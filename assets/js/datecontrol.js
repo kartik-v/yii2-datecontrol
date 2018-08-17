@@ -111,7 +111,9 @@
         listen: function () {
             var self = this, $el = self.$element;
             $el.on('change', function () {
-                self.validate();
+                setTimeout(function () {
+                    self.validate();
+                }, 100);
             }).on('paste', function () {
                 setTimeout(function () {
                     $el.val($el.val());
