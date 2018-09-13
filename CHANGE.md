@@ -5,6 +5,9 @@ Change Log: `yii2-datecontrol`
 
 **Date:** _work in progress_
 
+- Move all source code to the `src` directory.
+- Enhancements to support Bootstrap v4.x.
+- (enh #124): Load settings from request in ParseController.php.
 - (enh #120): Better post params validation.
 - (enh #113): Correct empty value validation.
 

@@ -117,7 +117,7 @@ Licensing
 ---------
 
 It should also be made clear that **all code contributed to yii2-datecontrol** must be
-licensable under the [BSD-3 license][licensing].  Code that cannot be released
+licensable under the [BSD-3-Clause license][licensing].  Code that cannot be released
 under this license **cannot be accepted** into the project.
 
 [issue-search]: https://github.com/kartik-v/yii2-datecontrol/search?q=&type=Issues

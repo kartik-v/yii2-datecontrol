@@ -9,25 +9,23 @@
 
 namespace kartik\datecontrol;
 
-use Yii;
 use kartik\base\AssetBundle;
 
 /**
- * Asset bundle for the [[DateControl]] widget.
+ * Asset bundle for the [Krajee PHP Date Formatter](http://plugins.krajee.com/php-date-formatter) extension.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class DateControlAsset extends AssetBundle
+class DateFormatterAsset extends AssetBundle
 {
     /**
      * @inheritdoc
      */
     public function init()
     {
-        $this->depends = array_merge($this->depends, ['kartik\datecontrol\DateFormatterAsset']);
-        $this->setSourcePath(__DIR__ . '/assets');
-        $this->setupAssets('js', ['js/datecontrol']);
+        $this->setSourcePath('@vendor/kartik-v/php-date-formatter');
+        $this->setupAssets('js', ['js/php-date-formatter']);
         parent::init();
     }
 }

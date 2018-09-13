@@ -1,7 +1,8 @@
 yii2-datecontrol
 ================
 
-[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-datecontrol/v/stable)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
+[![Stable Version](https://poser.pugx.org/kartik-v/yii2-datecontrol/v/stable)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
+[![Untable Version](https://poser.pugx.org/kartik-v/yii2-datecontrol/v/unstable)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
 [![License](https://poser.pugx.org/kartik-v/yii2-datecontrol/license)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
 [![Total Downloads](https://poser.pugx.org/kartik-v/yii2-datecontrol/downloads)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
 [![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-datecontrol/d/monthly)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
@@ -9,7 +10,8 @@ yii2-datecontrol
 
 The **Date Control** module allows controlling date formats of attributes separately for View and Model for Yii Framework 2.0. It thus allows an easy way to work with dates when displaying to users in one way (format / timezone) but saving it in the database in another way (format / timezone).
 
-> Version 1.9.7 has been released. Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details.
+> Refer [CHANGE LOG](https://github.com/kartik-v/yii2-datecontrol/blob/master/CHANGE.md) for details on changes to various releases.
+
 > NOTE: Version 1.9.5 has BC breaking changes. A new property `widgetOptions` is available. This property will replace the `options` property for the scenario when `autoWidget` or `widgetClass` is set.
 
 ## Why Date Control?

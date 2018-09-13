@@ -166,8 +166,8 @@ class Module extends YiiModule
             self::FORMAT_TIME => [
                 'pluginOptions' => [
                     'showSeconds' => (strpos($format, 's') > 0) ? true : false,
-                    'showMeridian' => strpos($format, 'a') > 0 || strpos($format, 'A') > 0 ? true : false
-                ]
+                    'showMeridian' => strpos($format, 'a') > 0 || strpos($format, 'A') > 0 ? true : false,
+                ],
             ],
         ];
         $this->autoWidgetSettings = ArrayHelper::merge($settings, $this->autoWidgetSettings);
@@ -178,7 +178,8 @@ class Module extends YiiModule
      *
      * @return string
      */
-    public function getDisplayTimezone() {
+    public function getDisplayTimezone()
+    {
         if (!empty(Yii::$app->params['dateControlDisplayTimezone'])) {
             return Yii::$app->params['dateControlDisplayTimezone'];
         } elseif (!empty($this->displayTimezone)) {
@@ -193,7 +194,8 @@ class Module extends YiiModule
      *
      * @return string
      */
-    public function getSaveTimezone() {
+    public function getSaveTimezone()
+    {
         if (!empty(Yii::$app->params['dateControlSaveTimezone'])) {
             return Yii::$app->params['dateControlSaveTimezone'];
         } elseif (!empty($this->saveTimezone)) {
@@ -212,6 +214,7 @@ class Module extends YiiModule
      *
      * @param string $type the attribute type whether date, datetime, or time
      * @return string
+     * @throws InvalidConfigException
      */
     public function getDisplayFormat($type)
     {
@@ -235,6 +238,7 @@ class Module extends YiiModule
      *
      * @param string $type the attribute type whether date, datetime, or time
      * @return string
+     * @throws InvalidConfigException
      */
     public function getSaveFormat($type)
     {
@@ -265,7 +269,7 @@ class Module extends YiiModule
         } elseif ($format != '') {
             return FormatConverter::convertDateIcuToPhp($format, $type);
         } else {
-           throw new InvalidConfigException("Error parsing '{$type}' format.");
+            throw new InvalidConfigException("Error parsing '{$type}' format.");
         }
     }
 
@@ -285,7 +289,8 @@ class Module extends YiiModule
             $options['pluginOptions']['format'] = 'php:' . $format;
         } elseif (!empty($format) && $type === self::FORMAT_TIME) {
             $options['pluginOptions']['showSeconds'] = (strpos($format, 's') > 0) ? true : false;
-            $options['pluginOptions']['showMeridian'] = (strpos($format, 'a') > 0 || strpos($format, 'A') > 0) ? true : false;
+            $options['pluginOptions']['showMeridian'] = (strpos($format, 'a') > 0 || strpos($format,
+                    'A') > 0) ? true : false;
         }
         return $options;
     }

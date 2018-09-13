@@ -23,7 +23,7 @@ class ParseController extends Controller
     /**
      * Convert display date for saving to model.
      *
-     * @return string JSON encoded HTML output
+     * @return array JSON encoded HTML output
      */
     public function actionConvert()
     {

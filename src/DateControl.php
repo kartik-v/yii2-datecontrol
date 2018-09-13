@@ -11,9 +11,9 @@ namespace kartik\datecontrol;
 
 use DateTime;
 use DateTimeZone;
+use Exception;
 use kartik\base\Config;
 use kartik\base\InputWidget;
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -28,7 +28,7 @@ use yii\helpers\Url;
  * ~~~
  * use kartik\datecontrol\DateControl;
  * // usage of rendering date control widget as an active field within Yii active form
- * echo $form->field($model, 'datetime_2')->widget(DateControl::classname(), [
+ * echo $form->field($model, 'datetime_2')->widget(DateControl::class, [
  *     'displayFormat' => 'php:d-M-Y H:i:s',
  *     'type' => DateControl::FORMAT_DATETIME
  * ]);
@@ -289,6 +289,10 @@ class DateControl extends InputWidget
             $this->widgetOptions['options']['id'] = $this->options['id'];
         }
         $this->_doTranslate = isset($this->language) && $this->language != 'en';
+        if ($this->autoWidget && !isset($this->_widgetSettings[$this->type]['bsVersion']) && isset($this->bsVersion)) {
+            $this->_widgetSettings[$this->type]['bsVersion'] = $this->bsVersion;
+        }
+        $this->initBsVersion();
         if ($this->_doTranslate && $this->autoWidget) {
             $this->_widgetSettings[$this->type]['options']['language'] = $this->language;
         }
@@ -338,7 +342,7 @@ class DateControl extends InputWidget
      */
     protected function initConfig()
     {
-        $this->_module = Config::initModule(Module::classname());
+        $this->_module = Config::initModule(Module::class);
         if (!isset($this->autoWidget)) {
             $this->autoWidget = $this->_module->autoWidget;
         }
@@ -404,6 +408,7 @@ class DateControl extends InputWidget
      * Generates the display input.
      *
      * @return string
+     * @throws Exception
      */
     protected function getDisplayInput()
     {
@@ -455,8 +460,8 @@ class DateControl extends InputWidget
         if ($type === 'text') {
             $this->saveOptions['tabindex'] = 10000;
             return $label . ($this->hasModel() ?
-                Html::activeTextInput($this->model, $this->attribute, $this->saveOptions) :
-                Html::textInput($this->name, $this->value, $this->saveOptions));
+                    Html::activeTextInput($this->model, $this->attribute, $this->saveOptions) :
+                    Html::textInput($this->name, $this->value, $this->saveOptions));
         }
         return $this->hasModel() ?
             Html::activeHiddenInput($this->model, $this->attribute, $this->saveOptions) :
