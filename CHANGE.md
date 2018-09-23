@@ -3,11 +3,12 @@ Change Log: `yii2-datecontrol`
 
 ## version 1.9.7
 
-**Date:** _work in progress_
+**Date:** 23-Sep-2018
 
 - Move all source code to the `src` directory.
 - Enhancements to support Bootstrap v4.x.
 - (enh #124): Load settings from request in ParseController.php.
+- (bug #121): Add delay before run validate(), while "timepicker" make changes.
 - (enh #120): Better post params validation.
 - (enh #113): Correct empty value validation.
 

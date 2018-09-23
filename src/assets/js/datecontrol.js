@@ -30,7 +30,6 @@
             $.each(options, function (key, value) {
                 self[key] = value;
             });
-            /** @namespace options.idSave */
             self.$idSave = $("#" + options.idSave);
             self.dateFormatter = window.DateFormatter ? new window.DateFormatter(vSettings) : {};
             if (isEmpty(self.dateFormatter)) {
@@ -111,7 +110,9 @@
         listen: function () {
             var self = this, $el = self.$element;
             $el.on('change', function () {
-                self.validate();
+                setTimeout(function () {
+                    self.validate();
+                }, 100);
             }).on('paste', function () {
                 setTimeout(function () {
                     $el.val($el.val());
