@@ -13,6 +13,7 @@
         }
     ],
     "require": {
+        "php": ">=5.5.0",
         "kartik-v/yii2-krajee-base": ">=1.9",
         "kartik-v/php-date-formatter": ">1.3"
     },
