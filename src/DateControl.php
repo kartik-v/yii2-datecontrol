@@ -3,8 +3,8 @@
 /**
  * @package   yii2-datecontrol
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version   1.9.7
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2020
+ * @version   1.9.8
  */
 
 namespace kartik\datecontrol;
@@ -326,7 +326,11 @@ class DateControl extends InputWidget
             if ($this->displayTimezone != null) {
                 $date->setTimezone(new DateTimeZone($this->displayTimezone));
             }
-            $value = $date->format($this->displayFormat);
+            if ($this->type === self::FORMAT_DATE) {
+                $value = date($this->displayFormat, $date->getTimestamp());
+            } else {
+                $value = $date->format($this->displayFormat);
+            }
             if ($this->_doTranslate) {
                 $value = $this->translateDate($value, $this->displayFormat);
             }
