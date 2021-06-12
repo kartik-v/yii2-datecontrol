@@ -3,7 +3,7 @@ Change Log: `yii2-datecontrol`
 
 ## version 1.9.8
 
-**Date:** 03-Feb-2020
+**Date:** 12-Jun-2021
 
 - (enh #133): Correct conversion for FORMAT_DATE.
 
