@@ -3,12 +3,13 @@
 /**
  * @package   yii2-datecontrol
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2021
- * @version   1.9.8
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2022
+ * @version   1.9.9
  */
 
 namespace kartik\datecontrol;
 
+use kartik\base\Lib;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Module as YiiModule;
@@ -16,7 +17,8 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\FormatConverter;
 
 /**
- * Date control module for Yii Framework 2.0.
+ * Date control module for Yii Framework 2.0. This module is necessary to configure and use the [[DateControl]] widget
+ * in your application.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
@@ -24,25 +26,25 @@ use yii\helpers\FormatConverter;
 class Module extends YiiModule
 {
     /**
-     * Current module name.
+     * @var string current module name.
      */
     const MODULE = 'datecontrol';
     /**
-     * Date only format type.
+     * @var string date only format type.
      */
     const FORMAT_DATE = 'date';
     /**
-     * Time only format type.
+     * @var string time only format type.
      */
     const FORMAT_TIME = 'time';
     /**
-     * Date and time format type.
+     * @var string date and time format type.
      */
     const FORMAT_DATETIME = 'datetime';
-
     /**
      * @var array the format settings for displaying each date attribute. An associative array that need to be setup as
      * `$type => $format`, where:
+     *
      * `$type`: _string_, one of the `FORMAT` constants, and
      * `$format`: _string_, the PHP date/time format.
      *
@@ -55,8 +57,8 @@ class Module extends YiiModule
      * @var array the format settings for saving each date attribute.  An associative array that need to be setup as
      * $type => $format, where:
      *
-     * `$type`: _string_, one of the FORMAT constants, and
-     * `$format`: _string_, the PHP date/time format. Set this to 'U' to save it in Unix timestamp.
+     * `$type`: _string_, one of the `FORMAT` constants, and
+     * `$format`: _string_, the PHP date/time format. Set this to `'U'` to save it in Unix timestamp.
      *
      * @see [[initSettings()]]
      */
@@ -114,7 +116,8 @@ class Module extends YiiModule
     public $widgetSettings = [];
 
     /**
-     * @var string|array the route/action to convert the date as per the `saveFormat` set in DateControl widget.
+     * @var string|array the route/action to convert the date as per the [[DateControl::saveFormat]] setting in
+     * [[DateControl]] widget.
      */
     public $convertAction = ['/datecontrol/parse/convert'];
 
@@ -150,7 +153,7 @@ class Module extends YiiModule
     }
 
     /**
-     * Initializes the autowidget settings.
+     * Initializes the [[autoWidgetSettings]] property defaults.
      */
     protected function initAutoWidget()
     {
@@ -165,8 +168,8 @@ class Module extends YiiModule
             ],
             self::FORMAT_TIME => [
                 'pluginOptions' => [
-                    'showSeconds' => (strpos($format, 's') > 0) ? true : false,
-                    'showMeridian' => strpos($format, 'a') > 0 || strpos($format, 'A') > 0 ? true : false,
+                    'showSeconds' => Lib::strpos($format, 's') > 0,
+                    'showMeridian' => Lib::strpos($format, 'a') > 0 || Lib::strpos($format, 'A') > 0,
                 ],
             ],
         ];
@@ -265,7 +268,7 @@ class Module extends YiiModule
     public static function parseFormat($format, $type)
     {
         if (strncmp($format, 'php:', 4) === 0) {
-            return substr($format, 4);
+            return Lib::substr($format, 4);
         } elseif ($format != '') {
             return FormatConverter::convertDateIcuToPhp($format, $type);
         } else {
@@ -288,9 +291,8 @@ class Module extends YiiModule
             $options['convertFormat'] = true;
             $options['pluginOptions']['format'] = 'php:' . $format;
         } elseif (!empty($format) && $type === self::FORMAT_TIME) {
-            $options['pluginOptions']['showSeconds'] = (strpos($format, 's') > 0) ? true : false;
-            $options['pluginOptions']['showMeridian'] = (strpos($format, 'a') > 0 || strpos($format,
-                    'A') > 0) ? true : false;
+            $options['pluginOptions']['showSeconds'] = Lib::strpos($format, 's') > 0;
+            $options['pluginOptions']['showMeridian'] = Lib::strpos($format, 'a') > 0 || Lib::strpos($format, 'A') > 0;
         }
         return $options;
     }

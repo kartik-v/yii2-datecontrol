@@ -3,8 +3,8 @@
 /**
  * @package   yii2-datecontrol
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2021
- * @version   1.9.8
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2022
+ * @version   1.9.9
  */
 
 namespace kartik\datecontrol;
@@ -14,41 +14,41 @@ use DateTimeZone;
 use Exception;
 use kartik\base\Config;
 use kartik\base\InputWidget;
+use kartik\base\Lib;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
- * DateControl widget enables you to the formatting of date/time separately for display (View) and saving to
+ * DateControl widget enables you to manage formatting of date/time separately for display (View) and saving to
  * database (Model).
  *
- * Usage example:
+ * For example,
  *
- * ~~~
+ * ```php
  * use kartik\datecontrol\DateControl;
  * // usage of rendering date control widget as an active field within Yii active form
  * echo $form->field($model, 'datetime_2')->widget(DateControl::class, [
  *     'displayFormat' => 'php:d-M-Y H:i:s',
  *     'type' => DateControl::FORMAT_DATETIME
  * ]);
- * ~~~
+ * ```
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
  */
 class DateControl extends InputWidget
 {
     /**
-     * Date only format type.
+     * @var string date only format type.
      */
     const FORMAT_DATE = 'date';
     /**
-     * Time only format type.
+     * @var string time only format type.
      */
     const FORMAT_TIME = 'time';
     /**
-     * Date and time format type.
+     * @var string date and time format type.
      */
     const FORMAT_DATETIME = 'datetime';
     /**
@@ -168,7 +168,7 @@ class DateControl extends InputWidget
      */
     protected $_widgetSettings = [];
     /**
-     * @var boolean whether translation is needed
+     * @var boolean whether translation is needed.
      */
     private $_doTranslate = false;
 
@@ -189,7 +189,7 @@ class DateControl extends InputWidget
             return null;
         }
         $source = static::parseLocale($source, $format, $settings);
-        if (substr($format, 0, 1) !== '!') {
+        if (Lib::substr($format, 0, 1) !== '!') {
             $format = '!' . $format;
         }
         if ($timezone != null) {
@@ -234,7 +234,7 @@ class DateControl extends InputWidget
         }
         foreach (self::$_enSettings as $key => $value) {
             if (!empty($settings[$key]) && static::checkFormatKey($format, $key)) {
-                $source = str_ireplace($settings[$key], $value, $source);
+                $source = Lib::str_ireplace($settings[$key], $value, $source);
             }
         }
         return $source;
@@ -252,15 +252,15 @@ class DateControl extends InputWidget
     {
         switch ($key) {
             case 'months':
-                return strpos($format, 'F') !== false;
+                return Lib::strpos($format, 'F') !== false;
             case 'monthsShort':
-                return strpos($format, 'M') !== false;
+                return Lib::strpos($format, 'M') !== false;
             case 'days':
-                return strpos($format, 'l') !== false;
+                return Lib::strpos($format, 'l') !== false;
             case 'daysShort':
-                return strpos($format, 'D') !== false;
+                return Lib::strpos($format, 'D') !== false;
             case 'meridiem':
-                return stripos($format, 'A') !== false;
+                return Lib::stripos($format, 'A') !== false;
             default:
                 return false;
         }
@@ -504,7 +504,7 @@ class DateControl extends InputWidget
         if (empty($this->pluginOptions['dateSettings'][$type])) {
             return $string;
         }
-        return str_ireplace(self::$_enSettings[$type], $this->pluginOptions['dateSettings'][$type], $string);
+        return Lib::str_ireplace(self::$_enSettings[$type], $this->pluginOptions['dateSettings'][$type], $string);
     }
 
     /**

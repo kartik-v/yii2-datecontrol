@@ -6,10 +6,12 @@
     yii2-datecontrol
     <hr>
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DTP3NZQ6G2AYU"
-       title="Donate via Paypal" target="_blank">
-        <img src="http://kartik-v.github.io/bootstrap-fileinput-samples/samples/donate.png" alt="Donate"/>
-    </a>
+       title="Donate via Paypal" target="_blank"><img height="60" src="https://kartik-v.github.io/bootstrap-fileinput-samples/samples/donate.png" alt="Donate"/></a>
+    &nbsp; &nbsp; &nbsp;
+    <a href="https://www.buymeacoffee.com/kartikv" title="Buy me a coffee" ><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="60" alt="kartikv" /></a>
 </h1>
+
+<div align="center">
 
 [![Stable Version](https://poser.pugx.org/kartik-v/yii2-datecontrol/v/stable)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
 [![Untable Version](https://poser.pugx.org/kartik-v/yii2-datecontrol/v/unstable)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
@@ -17,6 +19,8 @@
 [![Total Downloads](https://poser.pugx.org/kartik-v/yii2-datecontrol/downloads)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
 [![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-datecontrol/d/monthly)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
 [![Daily Downloads](https://poser.pugx.org/kartik-v/yii2-datecontrol/d/daily)](https://packagist.org/packages/kartik-v/yii2-datecontrol)
+
+</div>
 
 The **Date Control** module allows controlling date formats of attributes separately for View and Model for Yii Framework 2.0. It thus allows an easy way to work with dates when displaying to users in one way (format / timezone) but saving it in the database in another way (format / timezone).
 
@@ -137,7 +141,7 @@ echo $form->field($model, 'datetime_2')->widget(DateControl::classname(), [
 The extension can thus now easily read date & time stamps consistently in ONE format (PHP DateTime) across the client and server. However, it is recommended to use `ajaxConversion` if you need seamless integration with PHP DateTime functions like timezone support.
 
 ### Demo
-You can see detailed [documentation and usage](http://demos.krajee.com/datecontrol) and a [demonstration](http://demos.krajee.com/datecontrol-demo) on the extension.
+You can see detailed [documentation and usage](http://demos.krajee.com/datecontrol), a [detailed demo](http://demos.krajee.com/datecontrol-demo) and [API Code Documentation](https://docs.krajee.com/kartik-datecontrol-datecontrol) for the extension.
 
 ## Installation
 

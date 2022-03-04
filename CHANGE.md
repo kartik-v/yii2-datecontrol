@@ -1,6 +1,12 @@
 Change Log: `yii2-datecontrol`
 ==============================
 
+## version 1.9.9
+
+**Date:** 04-Mar-2022
+
+- PHP 8.1 enhancements for native functions.
+
 ## version 1.9.8
 
 **Date:** 12-Jun-2021
